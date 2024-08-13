@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* add our custom components */
+@layer components {
+  /* hidden the sidebar */
+  .hiddenSidebar {
+    @apply translate-x-150%,;
+  }
+  .NavLinkStyle {
+    @apply w-full flex  gap-3  py-3 pr-3 tracking-wider rounded-md  transition-all duration-150 ease-in-out hover:bg-cazyTaupe hover:text-gray-800;
+  }
+  .submitBtns {
+    @apply mt-2  p-1.5 rounded-md bg-gray-400 active:-translate-y-1 border-2 text-gray-800 font-semibold hover:bg-gray-500 hover:text-black transition-all duration-150;
+  }
+  /* .active {
+    @apply bg-cazyTaupe py-2 rounded-md;
+
+  } */
+  /* .card {
+    background-color: theme('colors.white');
+    border-radius: theme('borderRadius.lg');
+    padding: theme('spacing.6');
+    box-shadow: theme('boxShadow.xl');
+  } */
+}
+
+/* custom font */
+@font-face {
+  font-family: "Anjoman Regular";
+  src: url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.eot");
+  src: url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/f6886c4078ba029be14b7d1053f961b5.svg#Anjoman Regular")
+      format("svg");
+}
+
+@font-face {
+  font-family: "Anjoman Bold";
+  src: url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.eot");
+  src: url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/ca953251f8931b1efb675a30ee3349ac.svg#Anjoman Bold")
+      format("svg");
+}
+
+/* vazir font */
+@font-face {
+  font-family: "Vazir";
+  src: url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.eot");
+  src: url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/e2b31b59d40719dfa19d27a19e829da8.svg#Vazir")
+      format("svg");
+}
+/* Aviny font */
+@font-face {
+  font-family: "Aviny";
+  src: url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.eot");
+  src: url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/bc976ea4fdb0b73135cd550b7a6d1f22.svg#Aviny")
+      format("svg");
+}
+/* dana font */
+@font-face {
+  font-family: "dana";
+  src: url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.eot");
+  src: url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/7b42849df32f871192f0d01d3fc45b1a.svg#dana")
+      format("svg");
+}
+
+/*  */
+@layer utilities {
+  .clipPathPolygon {
+    clip-path: polygon(0 4%, 100% 0, 100% 95%, 0% 100%);
+  }
+  .font-AnjomanRegular {
+    font-family: "Anjoman Regular";
+  }
+  .font-AnjomanBold {
+    font-family: "Anjoman Bold";
+  }
+  .font-vazir {
+    font-family: "Vazir";
+  }
+  .font-aviny {
+    font-family: "Aviny";
+  }
+  .font-dana {
+    font-family: "dana";
+  }
+}

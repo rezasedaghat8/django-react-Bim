@@ -4,6 +4,8 @@ from rest_framework import generics
 from . serializers import UserSerializer, NoteSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny 
 from .models import Note
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -34,6 +36,18 @@ class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    
+
+@csrf_exempt  # این خط برای غیرفعال کردن بررسی CSRF در این ویو است
+def save_data(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        # پردازش داده‌ها و ذخیره در دیتابیس یا سشن
+
+        return JsonResponse({'message': 'Data received successfully', 'name': name, 'email': email})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
     
 
     
