@@ -8,6 +8,7 @@ import TitleForm from "../../components/TitleForm";
 import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import { useFormik } from "formik";
+import axios from 'axios';
 
 function AddUser() {
   const formik = useFormik({
@@ -16,7 +17,10 @@ function AddUser() {
       password: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+    
+      // فراخوانی تابع برای ارسال داده
+      sendDataToServer(values);
+    
     },
     validate: (values) => {
       let errors = {};
@@ -32,7 +36,19 @@ function AddUser() {
     },
   });
 
-  return (
+  const sendDataToServer = (data) => {
+    axios.post('http://localhost:8000/api/addUser/', data)
+      .then(response => {
+        console.log('Data sent successfully:', response.data);
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('There was an error sending the data:', error);
+      });
+  };
+  
+
+    return (
     <>
       <PageNav />
 
@@ -79,6 +95,7 @@ function AddUser() {
             styleToBtn="submitBtns"
             // styleToNavLivk="submitBtns"
           />
+
         </Form>
       </Center>
     </>

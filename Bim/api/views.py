@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Note
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -39,15 +42,25 @@ class CreateUserView(generics.CreateAPIView):
     
 
 @csrf_exempt  # این خط برای غیرفعال کردن بررسی CSRF در این ویو است
-def save_data(request):
+def addUser(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        # پردازش داده‌ها و ذخیره در دیتابیس یا سشن
-
-        return JsonResponse({'message': 'Data received successfully', 'name': name, 'email': email})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
+        
+        data = json.loads(request.body)
+        name = data.get('personnelName', None)
+        password = data.get('password', None)
+        
+        print(name)
+        print(password)
+        
     
+        return JsonResponse({'message': 'Data received successfully', 'name': name, 'password': password})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+    # context = {
+    #     'taha': taha,
+    # }    
+    # return render(request, "AddUser.jsx", context)
+
+
 
     

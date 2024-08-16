@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, save_data
+from api.views import CreateUserView, addUser
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.urls import path
 
@@ -13,6 +13,6 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("Api-auth/", include("rest_framework.urls")),
     path("api/", include("api.urls")),
-    # path('api/notes/', save_data, name='save-data'),
+    path('api/addUser/', addUser, name='addUser'),
 ]
 
