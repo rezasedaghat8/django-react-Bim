@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from django.views import View
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
@@ -60,7 +60,51 @@ def addUser(request):
     #     'taha': taha,
     # }    
     # return render(request, "AddUser.jsx", context)
-
-
-
     
+    
+class viewMeeting(View):
+    def get(self, request, *args, **kwargs):
+        # نمونه‌ای از داده‌ها
+        notes = [
+            {'id': 1, 'title': 'Taha', 'content': 'This is Goat'},
+            {'id': 2, 'title': 'Sahrayi', 'content': 'This is Bitch'}
+        ]
+        
+        moze = [
+            {'id': 1, 'title': 'Reza', 'content': 'This is Goat'},
+            {'id': 2, 'title': 'Sedaghat', 'content': 'This is Bitch'}
+        ]
+        
+        # برگرداندن داده‌ها به صورت JSON
+        return JsonResponse({'notes': notes, 'moze': moze})    
+
+
+@csrf_exempt  # این خط برای غیرفعال کردن بررسی CSRF در این ویو است
+def addContractor(request):
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+        name = data.get('name', None)
+        description = data.get('description', None)
+        hasSystemOrNot= data.get('hasSystemOrNot', None)
+        bankNumber= data.get('bankNumber', None)
+        quality= data.get('quality', None)
+        
+        print(name + description + bankNumber + quality)
+    
+        return JsonResponse({'message': 'Data received successfully'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+class itemList(View):
+    def get(self, request, *args, **kwargs):
+        # نمونه‌ای از داده‌ها
+        items = [
+            {'id': 1, 'title': 'Taha', 'content': 'This is Goat'},
+            {'id': 2, 'title': 'Sahrayi', 'content': 'This is Bitch'}
+        ]
+        
+        
+        # برگرداندن داده‌ها به صورت JSON
+        return JsonResponse({'items': items})    
+  

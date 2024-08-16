@@ -10,6 +10,8 @@ import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useEffect } from "react";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
 function AddContractor() {
   // useEffect(function () {
@@ -20,7 +22,6 @@ function AddContractor() {
   //     document.title = "Bim Project";
   //   };
   // }, []);
-
   const formik = useFormik({
     initialValues: {
       hasSystemOrNot: false,
@@ -30,7 +31,8 @@ function AddContractor() {
       quality: "",
     },
     onSubmit: (values) => {
-      console.log(JSON.stringify(values));
+      // console.log(JSON.stringify(values));
+      sendDataToServer(values, "addContractor")
     },
     validate: (values) => {
       let errors = {};

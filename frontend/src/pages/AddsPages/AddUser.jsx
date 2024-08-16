@@ -9,6 +9,8 @@ import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import { useFormik } from "formik";
 import axios from 'axios';
+import { sendDataToServer } from "../../services/helper";
+
 
 function AddUser() {
   const formik = useFormik({
@@ -19,7 +21,7 @@ function AddUser() {
     onSubmit: (values) => {
     
       // فراخوانی تابع برای ارسال داده
-      sendDataToServer(values);
+      sendDataToServer(values, "addUser")
     
     },
     validate: (values) => {
@@ -36,17 +38,6 @@ function AddUser() {
     },
   });
 
-  const sendDataToServer = (data) => {
-    axios.post('http://localhost:8000/api/addUser/', data)
-      .then(response => {
-        console.log('Data sent successfully:', response.data);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('There was an error sending the data:', error);
-      });
-  };
-  
 
     return (
     <>
