@@ -1,15 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
-
-class Note(models.Model):
-    title = models.CharField(max_length=100)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
-
-    def __str__(self):
-        return self.title
 
 
 class Projects(models.Model):
@@ -18,12 +8,16 @@ class Projects(models.Model):
     project_name = models.CharField(max_length=50)
     personnel_id = models.ForeignKey('Personnel', on_delete=models.CASCADE) # purchasingManager
 
+class User(models.Model):
+    name = models.CharField(max_length=50)
+    password = models.IntegerField()
+    
 class Personnel(models.Model):
-    national_id = models.IntegerField()
+    national_id = models.IntegerField(null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     number = models.IntegerField()
-    join_date = models.DateField()
+    join_date = models.DateField(null=True)
     wage = models.IntegerField()
     bank_number = models.CharField(max_length=26)
 
@@ -213,7 +207,7 @@ class Coordinations(models.Model):
 
 
 class Meta:
-    app_label = 'bimapp'
+    app_label = 'api'
     
 
 

@@ -9,6 +9,9 @@ import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import { useFormik } from "formik";
 import Logo from "../../components/Logo";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 function AddWarehouse() {
   const formik = useFormik({
@@ -17,7 +20,9 @@ function AddWarehouse() {
       location: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+
+      sendDataToServer(values, "addWarehouse")
+    
     },
     validate: (values) => {
       let errors = {};

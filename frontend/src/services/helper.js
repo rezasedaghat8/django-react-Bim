@@ -11,19 +11,20 @@ const sendDataToServer = (data, url) => {
       });
 };
 
-const getDataFromServer = (datum, setDatum, url) =>{ 
-    // درخواست GET به API برای دریافت داده‌ها
-    axios.get(`http://localhost:8000/api/${url}/`)
-    .then(response => {
-    setDatum(response.data[datum]);  // داده‌ها را در state ذخیره کنید
-    console.log(response.data[datum])
-    })
-    .catch(error => {
-    console.error('Error fetching notes:', error);
-});
-};
+export default sendDataToServer;
+
+// const getDataFromServer = (setDatum, datum, url) =>{ 
+//     // درخواست GET به API برای دریافت داده‌ها
+//     axios.get(`http://localhost:8000/api/${url}/`)
+//     .then(response => {
+//     setDatum(response.data[datum]);  // داده‌ها را در state ذخیره کنید
+//     console.log(response.data.datum)
+//     })
+//     .catch(error => {
+//     console.error('Error fetching notes:', error);
+// });
+// };
 
 
-export {sendDataToServer, getDataFromServer};
 
 

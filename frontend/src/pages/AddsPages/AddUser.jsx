@@ -9,7 +9,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import { useFormik } from "formik";
 import axios from 'axios';
-import { sendDataToServer } from "../../services/helper";
+import sendDataToServer from "../../services/helper";
 
 
 function AddUser() {

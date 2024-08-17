@@ -10,6 +10,8 @@ import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useFormik } from "formik";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
 function AddPersonnel() {
   const formik = useFormik({
@@ -21,7 +23,9 @@ function AddPersonnel() {
       bankNumber: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+
+      sendDataToServer(values, "addPersonnel")
+    
     },
     validate: (values) => {
       let errors = {};

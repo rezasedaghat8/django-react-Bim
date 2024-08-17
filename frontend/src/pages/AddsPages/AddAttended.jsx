@@ -9,21 +9,41 @@ import SearchableSelectTag from "../../components/SearchableSelectTag";
 import SubmitBtn from "../../components/SubmitBtn";
 import TitleForm from "../../components/TitleForm";
 import ErrorMessage from "../../components/ErrorMessage";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
-// option for Searchable select Tag Unit
-const optionForPersonnel = [
-  { label: "پرسنل 1", value: "PersonnelA" },
-  { label: "پرسنل 2", value: "PersonnelB" },
-  { label: "پرسنل 3", value: "Personnel3" },
-];
 
 function AddAttended() {
+  const [personnels, setpersonnels] = useState([]);
+  
+    useEffect(() => {
+      
+      // درخواست GET به API برای دریافت داده‌ها
+      axios.get('http://localhost:8000/api/addAttended/')
+        .then(response => {
+          setpersonnels(response.data.personnels);  // داده‌ها را در state ذخیره کنید
+          console.log(response.data.personnels)
+        })
+        .catch(error => {
+          console.error('Error fetching personnels:', error);
+        });
+
+
+    }, []);
+
+
+// option for Searchable select Tag Unit
+const optionForPersonnel = personnels.map(item => {return{label: item.first_name, value: item.national_id}})
+
+
   const formik = useFormik({
     initialValues: {
       personnel: [],
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addAttended")
     },
     validate: (values) => {
       let errors = {};
