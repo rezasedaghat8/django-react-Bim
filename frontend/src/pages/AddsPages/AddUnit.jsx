@@ -9,6 +9,9 @@ import Form from "../../components/Form";
 import TextArea from "../../components/TextArea";
 import TitleForm from "../../components/TitleForm";
 import { useFormik } from "formik";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 function AddUnit() {
   const formik = useFormik({
@@ -18,6 +21,7 @@ function AddUnit() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addUnit")
     },
     validate: (values) => {
       let errors = {};

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import addUser, viewMeeting, addContractor, itemList, addPersonnel, addWarehouse, addAttended
+from api.views import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.urls import path
 
@@ -15,5 +15,10 @@ urlpatterns = [
     path('api/addPersonnel/', addPersonnel, name='addPersonnel'),
     path('api/addWarehouse/', addWarehouse, name='addWarehouse'),
     path('api/addAttended/', addAttended.as_view(), name='addAttended'),
+    path('api/addRole/', addRole, name='addRole'),
+    path('api/addUnit/', addUnit, name='addUnit'), 
+    path('api/attendanceList/', attendanceList.as_view(), name='attendanceList'),
+    path('api/addPurchase/', addPurchase.as_view(), name='addPurchase'), 
+    path('api/addEntered/', addEntered.as_view(), name='addEntered'),
 ]
 

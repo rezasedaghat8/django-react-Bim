@@ -9,6 +9,9 @@ import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
 import Form from "../../components/Form";
 import { useFormik } from "formik";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 function AddRole() {
   const formik = useFormik({
@@ -19,6 +22,8 @@ function AddRole() {
     },
     onSubmit: (values) => {
       console.log(values);
+      // فراخوانی تابع برای ارسال داده
+      sendDataToServer(values, "addRole")
     },
     validate: (values) => {
       let errors = {};

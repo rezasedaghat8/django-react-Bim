@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
 import PageNav from "../../components/PageNav";
 import Center from "../../components/Center";
 import Logo from "../../components/Logo";
@@ -10,22 +11,50 @@ import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 // option for Searchable select Tag Unit
-const optionForUnit = [
-  { label: "واحد 1", value: "UnitA" },
-  { label: "واحد 2", value: "UnitB" },
-  { label: "واحد 3", value: "Unit3" },
-];
-
+// const optionForUnit = [
+//   { label: "واحد 1", value: "UnitA" },
+//   { label: "واحد 2", value: "UnitB" },
+//   { label: "واحد 3", value: "Unit3" },
+// ];
 // option for Searchable select tag Origin
-const optionForOrigin = [
-  { label: "بنیاد 1", value: "Origin A" },
-  { label: "بنیاد 2", value: "Origin B" },
-  { label: "بنیاد 3", value: "Origin C" },
-];
+// const optionForOrigin = [
+//   { label: "بنیاد 1", value: "Origin A" },
+//   { label: "بنیاد 2", value: "Origin B" },
+//   { label: "بنیاد 3", value: "Origin C" },
+// ];
 
 function AddEntered() {
+  
+  const [origins, setOrigins] = useState([]);
+  const [units, setUnits] = useState([]);
+
+    useEffect(() => {
+      
+      // درخواست GET به API برای دریافت داده‌ها
+      axios.get('http://localhost:8000/api/addEntered/')
+        .then(response => {
+          setOrigins(response.data.serializer_origin);
+          setUnits(response.data.serializer_unit);
+          console.log(response.data.serializer_origin);
+          console.log(response.data.serializer_unit);
+        })
+        .catch(error => {
+          console.error('Error fetching notes:', error);
+        });
+
+
+    }, []);
+
+const optionForUnit = units.map(unit => {return{label: unit.name, value: unit.id}})
+
+const optionForOrigin = origins.map(origin => {return{label: origin.name, value: origin.id}})
+
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -37,6 +66,7 @@ function AddEntered() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addEntered")
     },
     validate: (values) => {
       let errors = {};

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import Center from "../../components/Center";
 import Logo from "../../components/Logo";
@@ -12,21 +12,51 @@ import SubmitBtn from "../../components/SubmitBtn";
 import Form from "../../components/Form";
 import { NavLink } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 // Options for SearchableSelectTag Items and Units
-const optionForItems = [
-  { label: "آیتم 1", value: "Item A" },
-  { label: "آیتم 2", value: "Item B" },
-  { label: "آیتم 3", value: "Item C" },
-];
+// const optionForItems = [
+//   { label: "آیتم 1", value: "Item A" },
+//   { label: "آیتم 2", value: "Item B" },
+//   { label: "آیتم 3", value: "Item C" },
+// ];
 
-const optionForUnit = [
-  { label: "واحد 1", value: "UnitA" },
-  { label: "واحد 2", value: "UnitB" },
-  { label: "واحد 3", value: "Unit3" },
-];
+// const optionForUnit = [
+//   { label: "واحد 1", value: "UnitA" },
+//   { label: "واحد 2", value: "UnitB" },
+//   { label: "واحد 3", value: "Unit3" },
+// ];
 
 function AddPurchase() {
+
+  const [items, setItems] = useState([]);
+  const [units, setUnits] = useState([]);
+
+    useEffect(() => {
+      
+      // درخواست GET به API برای دریافت داده‌ها
+      axios.get('http://localhost:8000/api/addPurchase/')
+        .then(response => {
+          setItems(response.data.serializer_item);
+          setUnits(response.data.serializer_unit);
+          console.log(response.data.serializer_item);
+          console.log(response.data.serializer_unit);
+        })
+        .catch(error => {
+          console.error('Error fetching notes:', error);
+        });
+
+
+    }, []);
+
+
+const optionForItems = items.map(item => {return{label: item.name, value: item.id}})
+
+const optionForUnit = units.map(unit => {return{label: unit.name, value: unit.id}})
+
+
   const [isShow, setIsShow] = useState(false);
 
   const formik = useFormik({
@@ -39,6 +69,7 @@ function AddPurchase() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addPurchase")
     },
     validate: (values) => {
       const errors = {};
@@ -80,6 +111,7 @@ function AddPurchase() {
     }
   }
 
+  
   return (
     <>
       <PageNav />

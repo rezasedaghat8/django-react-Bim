@@ -5,10 +5,28 @@ import PageNav from "../../components/PageNav";
 import TableForm from "../../components/TableForm";
 import TitleForm from "../../components/TitleForm";
 import WithOutForm from "../../components/WithoutForm";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 function AttendanceList() {
   const date = new Date().toJSON().slice(0, 10);
+  const [lists, setLists] = useState([]);
+  
+    useEffect(() => {
+      
+      // درخواست GET به API برای دریافت داده‌ها
+      axios.get('http://localhost:8000/api/attendanceList/')
+        .then(response => {
+          setLists(response.data.personnel_array);  // داده‌ها را در state ذخیره کنید
+          console.log(response.data.personnel_array)
+        })
+        .catch(error => {
+          console.error('Error fetching notes:', error);
+        });
 
+
+    }, []);
   return (
     <>
       <PageNav />
@@ -31,8 +49,10 @@ function AttendanceList() {
                 text=" افراد حاضر :"
                 styleCss="mt-7 font-bold text-lg"
               />
+              
+            
               <TableForm
-                numRow={5}
+                numRow={lists.length}
                 thItems={["ردیف", "نام کامل", "نقش"]}
                 tdItems={{
                   0: [1, "هومن خلیلی", "کارگر"],
@@ -42,6 +62,9 @@ function AttendanceList() {
                   4: [5, "هومن خلیلی", "کارگر"],
                 }}
               />
+            
+            
+
             </div>
 
             <div className="w-full">

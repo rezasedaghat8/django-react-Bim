@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Workers, Personnel, Units, Contractors, Items, Warehouses, Machines, Origins, Projects, Roles, Tasks, Meetings, PurchaseRequests, Reports, MeetingPersonnel
+from .models import Workers, Personnel, AttendanceList, Units, Contractors, Items, Warehouses, Machines, Origins, Projects, Roles, Tasks, Meetings, PurchaseRequests, Reports, MeetingPersonnel
 
 
 
@@ -29,4 +29,6 @@ admin.site.register(PurchaseRequests)
 
 admin.site.register(Reports) 
 
-admin.site.register(MeetingPersonnel)
+admin.site.register(MeetingPersonnel) 
+
+admin.site.register(AttendanceList)
