@@ -10,14 +10,38 @@ import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useFormik } from "formik";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
-const optionsForFullName = [
-  { label: "هومن خلیلی1", value: "hooman khalili" },
-  { label: "صداقت بی صداقت2", value: "sedaghat" },
-  { label: "دیگران3", value: "digaran" },
-];
+// const optionsForFullName = [
+//   { label: "هومن خلیلی1", value: "hooman khalili" },
+//   { label: "صداقت بی صداقت2", value: "sedaghat" },
+//   { label: "دیگران3", value: "digaran" },
+// ];
 
 function AddWorker() {
+
+  const [personnels, setPersonnels] = useState([]);
+
+  useEffect(() => {
+    
+    // درخواست GET به API برای دریافت داده‌ها
+    axios.get('http://localhost:8000/api/addWorker/')
+      .then(response => {
+        setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+        console.log(response.data.serializer_personnels);
+      })
+      .catch(error => {
+        console.error('Error fetching personnels:', error);
+      });
+
+
+  }, []);
+  
+const optionsForFullName = personnels.map(item => {return{label: item.first_name+" "+item.last_name, value: item.id}})
+
+
   const formik = useFormik({
     initialValues: {
       // Adjust initial value for multi-select
@@ -28,6 +52,7 @@ function AddWorker() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addWorker")
     },
     validate: (values) => {
       let errors = {};

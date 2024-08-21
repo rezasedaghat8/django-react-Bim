@@ -1,5 +1,4 @@
 import { useFormik } from "formik";
-
 import PageNav from "../../components/PageNav";
 import TitleForm from "../../components/TitleForm";
 import LabelForm from "../../components/LabelForm";
@@ -12,15 +11,40 @@ import Center from "../../components/Center";
 import Logo from "../../components/Logo";
 import TextArea from "../../components/TextArea";
 // import { DatePicker, TimePicker } from "zaman";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
-const optionsForPersonnelName = [
-  { label: "پرسنل 1", value: "personnel A" },
-  { label: "پرسنل 2", value: "personnel B" },
-  { label: "پرسنل 3", value: "personnel C" },
-];
+
+// const optionsForPersonnelName = [
+//   { label: "پرسنل 1", value: "personnel A" },
+//   { label: "پرسنل 2", value: "personnel B" },
+//   { label: "پرسنل 3", value: "personnel C" },
+// ];
 
 function AddMeeting() {
-  const formik = useFormik({
+  
+  const [personnels, setPersonnels] = useState([]);
+
+  useEffect(() => {
+    
+    // درخواست GET به API برای دریافت داده‌ها
+    axios.get('http://localhost:8000/api/addMeeting/')
+      .then(response => {
+        setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+        console.log(response.data.serializer_personnels);
+      })
+      .catch(error => {
+        console.error('Error fetching personnels:', error);
+      });
+
+
+  }, []);
+  
+const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
+
+  
+const formik = useFormik({
     initialValues: {
       name: "",
       time: "",
@@ -31,6 +55,7 @@ function AddMeeting() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addMeeting")
     },
     validate: (values) => {
       let errors = {};
@@ -104,7 +129,7 @@ function AddMeeting() {
             />
           ) : null}
 
-          <LabelForm text="مدت   : " />
+          <LabelForm text="مدت   : ( دقیقه )" />
           <InputForm
             formik={formik}
             type="text"

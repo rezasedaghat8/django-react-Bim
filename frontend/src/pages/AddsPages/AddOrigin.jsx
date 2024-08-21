@@ -9,6 +9,10 @@ import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import { useFormik } from "formik";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
+
 
 function AddOrigin() {
   const formik = useFormik({
@@ -24,6 +28,7 @@ function AddOrigin() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addOrigin")
     },
     validate: (values) => {
       let errors = {};

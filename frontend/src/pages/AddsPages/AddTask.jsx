@@ -10,28 +10,56 @@ import TextArea from "../../components/TextArea";
 import SubmitBtn from "../../components/SubmitBtn";
 import { useFormik } from "formik";
 import ErrorMessage from "../../components/ErrorMessage";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
 // options for Contractor name selector
-const optionsForContractorName = [
-  { label: "پیمانکار 1", value: "Contractor A" },
-  { label: "پیمانکار 2", value: "Contractor B" },
-  { label: "پیمانکار 3", value: "Contractor C" },
-];
-
+// const optionsForContractorName = [
+//   { label: "پیمانکار 1", value: "Contractor A" },
+//   { label: "پیمانکار 2", value: "Contractor B" },
+//   { label: "پیمانکار 3", value: "Contractor C" },
+// ];
 // options for personnel name selector
-const optionsForPersonnelName = [
-  { label: "پرسنل 1", value: "Personnel A" },
-  { label: "پرسنل 2", value: "Personnel B" },
-  { label: "پرسنل 3", value: "Personnel C" },
-];
+// const optionsForPersonnelName = [
+//   { label: "پرسنل 1", value: "Personnel A" },
+//   { label: "پرسنل 2", value: "Personnel B" },
+//   { label: "پرسنل 3", value: "Personnel C" },
+// ];
 // options for unit selector
-const optionsForUnit = [
-  { label: "واحد 1", value: "Unit A" },
-  { label: "واحد 2", value: "Unit B" },
-  { label: "واحد 3", value: "Unit C" },
-];
+// const optionsForUnit = [
+//   { label: "واحد 1", value: "Unit A" },
+//   { label: "واحد 2", value: "Unit B" },
+//   { label: "واحد 3", value: "Unit C" },
+// ];
 
 function AddTask() {
+  
+  const [personnels, setPersonnels] = useState([]);
+  const [contractors, setContractors] = useState([]);
+  const [units, setUnits] = useState([]);
+
+  useEffect(() => {
+    
+    // درخواست GET به API برای دریافت داده‌ها
+    axios.get('http://localhost:8000/api/addTask/')
+      .then(response => {
+        setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+        setContractors(response.data.serializer_contractors);
+        setUnits(response.data.serializer_units);
+        console.log(response.data.serializer_contractors);
+      })
+      .catch(error => {
+        console.error('Error fetching personnels:', error);
+      });
+
+
+  }, []);
+  
+const optionsForContractorName = contractors.map(item => {return{label: item.name, value: item.id}})
+const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
+const optionsForUnit = units.map(item => {return{label: item.name, value: item.id}})
+  
   const formik = useFormik({
     initialValues: {
       contractorName: "",
@@ -46,6 +74,7 @@ function AddTask() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addTask")
     },
     validate: (values) => {
       let errors = {};
@@ -127,7 +156,7 @@ function AddTask() {
             />
           ) : null}
 
-          <LabelForm text="موضوع(سابجکت) :" />
+          <LabelForm text="موضوع (آیدی سابجکت) :" />
           <InputForm
             formik={formik}
             type="text"

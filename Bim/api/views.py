@@ -148,7 +148,7 @@ class addAttended(APIView): # Done
 
 
 @permission_classes([AllowAny])
-class attendanceList(APIView): 
+class attendanceList(APIView): #Not done / ( table part )
     def get(self, request, *args, **kwargs):
         attendance_items = AttendanceList.objects.all()
         personnel_array = []
@@ -162,7 +162,7 @@ class attendanceList(APIView):
         
 
 @permission_classes([AllowAny])
-class addPurchase(APIView): 
+class addPurchase(APIView): #Done / ( item part )
     def get(self, request, *args, **kwargs):
         items = Items.objects.all()
         serializer_item = ItemsSerializer(items, many=True)  # Serialize the list of objects
@@ -179,10 +179,10 @@ class addPurchase(APIView):
             quantity = data.get('quantity', None)
             name = data.get('name', None)
             description = data.get('description', None)
-            unit = data.get('unit', None)
-            
-            print(item)
-            print(unit)
+            unit_id = data.get('unit', None)
+            unit = Units.objects.get(id=unit_id)
+            new_purchase = PurchaseRequests.objects.create(name=name, description=description, unit_id=unit, quantity=quantity)
+            print(new_purchase)
             
             return JsonResponse({'message': 'Data received successfully'})
         return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -190,7 +190,7 @@ class addPurchase(APIView):
 
 
 @permission_classes([AllowAny])
-class addEntered(APIView): 
+class addEntered(APIView): #Done / ( report_id )
     def get(self, request, *args, **kwargs):
         origins = Origins.objects.all()
         serializer_origin = OriginsSerializer(origins, many=True)  # Serialize the list of objects
@@ -207,13 +207,128 @@ class addEntered(APIView):
             quantity = data.get('quantity', None)
             name = data.get('name', None)
             description = data.get('description', None)
-            unit = data.get('unit', None)
-            origin = data.get('origin', None)
+            unit_id = data.get('unit', None)
+            unit = Units.objects.get(id=unit_id)
+            origin_id = data.get('origin', None)
+            origin = Origins.objects.get(id=origin_id)
+            report = Reports.objects.get(id=1)
+            new_entered = Entered.objects.create(name=name, description=description, unit_id=unit, quantity=quantity, price_per_unit=pricePerUnit, origin_id=origin, report_id=report)
             
-            print(origin)
-            print(unit)
+            print(new_entered)
             
+            return JsonResponse({'message': 'Data received successfully'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@permission_classes([AllowAny])
+class addTask(APIView): #Done
+    def get(self, request, *args, **kwargs):
+        contractors = Contractors.objects.all()
+        serializer_contractors = ContractorsSerializer(contractors, many=True)  # Serialize the list of objects
+        units = Units.objects.all()
+        serializer_units = UnitsSerializer(units, many=True)
+        personnels = Personnel.objects.all()
+        serializer_personnels = PersonnelSerializer(personnels, many=True)
+        
+        return JsonResponse({'serializer_contractors': serializer_contractors.data, 'serializer_units':serializer_units.data, 'serializer_personnels':serializer_personnels.data})
+        
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            contractorName = data.get('contractorName', None)
+            contractor = Contractors.objects.get(id=contractorName)
+            personnelName = data.get('personnelName', None)
+            subject_id = data.get('subject', None)
+            subject = Subjects.objects.get(id=subject_id)
+            name = data.get('name', None)
+            unit_id = data.get('unit', None)
+            unit = Units.objects.get(id=unit_id)
+            quantity = data.get('quantity', None)
+            description = data.get('description', None)
+            estimatedTime = data.get('estimatedTime', None)
+            # image = data.get('name', None)
+            report = Reports.objects.get(id=1)
+            for personnel_id in personnelName:
+                personnel = Personnel.objects.get(id=personnel_id) 
+                new_task = Tasks.objects.create(report_id=report, national_id=personnel, contractor_id=contractor, subject_id=subject, name=name, unit_id = unit, quantity=quantity, description=description, proximate_time=estimatedTime)
+                print(new_task)
+                
+            return JsonResponse({'message': 'Data received successfully'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@permission_classes([AllowAny])
+class addMeeting(APIView): #Done
+    def get(self, request, *args, **kwargs):
+        personnels = Personnel.objects.all()
+        serializer_personnels = PersonnelSerializer(personnels, many=True)
+        
+        return JsonResponse({'serializer_personnels':serializer_personnels.data})
+        
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            name = data.get('name', None)
+            time = data.get('time', None)
+            duration = data.get('duration', None)
+            proceeding = data.get('proceeding', None)
+            agenda = data.get('agenda', None)
+            personnel = data.get('personnel', None)
+            report = Reports.objects.get(id=1)
+            new_meeting = Meetings.objects.create(name=name, date=time, duration=duration, proceedings=proceeding, agenda=agenda, report_id=report)
+            print(new_meeting)
+            for person in personnel:
+                per = Personnel.objects.get(id=person)
+                bridge_obj = MeetingPersonnel.objects.create( personnel_id=per, meeting_id=new_meeting)
             
+            return JsonResponse({'message': 'Data received successfully'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt  
+def addOrigin(request): # Done
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        originName = data.get('originName', None)
+        description = data.get('description', None)
+        bankNumber = data.get('bankNumber', None)
+        number = data.get('number', None)
+        quality = data.get('quality', None)
+        gain = data.get('gain', None)
+        city = data.get('city', None)
+        street = data.get('street', None)
+        
+        new_origin = Origins.objects.create(name=originName, description=description, bank_number=bankNumber, number=number, quality=quality, gain=gain, city=city, street=street)
+        print(new_origin)
+        
+        return JsonResponse({'message': 'Data received successfully'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@permission_classes([AllowAny])
+class addWorker(APIView): #Done
+    def get(self, request, *args, **kwargs):
+        personnels = Personnel.objects.all()
+        serializer_personnels = PersonnelSerializer(personnels, many=True)
+        
+        return JsonResponse({'serializer_personnels':serializer_personnels.data})
+        
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            fullName = data.get('fullName', None)
+            number = data.get('number', None)
+            wage = data.get('wage', None)
+            bankNumber = data.get('bankNumber', None)
+            date_now = datetime.now().date()
+            for name in fullName:
+                person = Personnel.objects.get(id=name)
+                new_worker = Workers.objects.create(first_name=person.first_name, last_name=person.last_name, number=number, join_date=date_now, wage=wage, bank_number=bankNumber)
+                print(new_worker)
+                
             return JsonResponse({'message': 'Data received successfully'})
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
