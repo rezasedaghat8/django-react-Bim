@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-function InputForm({ formik, type, id, placeholder, styleInput = "", name }) {
+function InputForm({ formik, type, id, placeholder, styleInput = "", name, defaultValue=""}) {
   // this state to manage the password show and hidden mode ....sntdayi trick
   const [inputType, setInputType] = useState(type);
   function onClickHideOrShowPass() {
@@ -19,6 +19,7 @@ function InputForm({ formik, type, id, placeholder, styleInput = "", name }) {
       }  relative`}
     >
       <input
+        defaultValue={defaultValue}
         type={inputType}
         id={id}
         placeholder={placeholder}

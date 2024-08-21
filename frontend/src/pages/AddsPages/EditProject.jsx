@@ -10,6 +10,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 import TitleForm from "../../components/TitleForm";
 import Form from "../../components/Form";
 import InputForm from "../../components/InputForm";
+import sendDataToServer from "../../services/helper";
 
 // option for project name Selector
 let optionsForProjectName = [
@@ -33,6 +34,33 @@ let optionsForContractors = [
 ];
 
 function EditProject() {
+  
+  
+
+  
+//   const [personnels, setPersonnels] = useState([]);
+
+//   useEffect(() => {
+    
+//     // درخواست GET به API برای دریافت داده‌ها
+//     axios.get('http://localhost:8000/api/addMeeting/')
+//       .then(response => {
+//         setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+//         console.log(response.data.serializer_personnels);
+//       })
+//       .catch(error => {
+//         console.error('Error fetching personnels:', error);
+//       });
+
+
+//   }, []);
+  
+// const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
+  
+  
+  
+  
+  
   // i must use  useState hook
   const [isShow, setIsShow] = useState(false);
   const formik = useFormik({
@@ -76,6 +104,17 @@ function EditProject() {
   function openTheDetails() {
     if (!isShow && formik.values.projectName) {
       setIsShow(true);
+
+
+
+
+
+      // sendDataToServer()
+
+
+
+
+
     } else {
       <ErrorMessage
         styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
@@ -136,6 +175,7 @@ function EditProject() {
               <InputForm
                 formik={formik}
                 type="text"
+                defaultValue="0000000000000000000"
                 name="architectName"
                 id="architectName"
                 styleInput="rounded-md  text-black"

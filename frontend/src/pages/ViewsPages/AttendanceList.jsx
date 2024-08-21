@@ -8,6 +8,7 @@ import WithOutForm from "../../components/WithoutForm";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
 function AttendanceList() {
   const date = new Date().toJSON().slice(0, 10);
   const [lists, setLists] = useState([]);
@@ -48,14 +49,19 @@ function AttendanceList() {
               />
               <TableForm
                 thItems={["ردیف", "نام کامل", "نقش"]}
-                tdItems={[
-                  { index: 1, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 2, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 3, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
-                ]}
+                // tdItems={[
+                //   { index: 1, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 2, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 3, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
+                // ]}
+
+                tdItems={
+                  lists.map( (item, index) => { return {index: index+1, role:item.first_name, fullName:item.last_name}})
+                }
+
               />
             </div>
 
@@ -66,12 +72,17 @@ function AttendanceList() {
               />
               <TableForm
                 thItems={["ردیف", "نام کامل", "نقش"]}
-                tdItems={[
-                  { index: 1, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 2, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 3, role: "کارگر", fullName: "هومن خلیلی" },
-                  { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
-                ]}
+                // tdItems={[
+                //   { index: 1, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 2, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 3, role: "کارگر", fullName: "هومن خلیلی" },
+                //   { index: 4, role: "کارگر", fullName: "هومن خلیلی" },
+                // ]}
+
+                tdItems={
+                  lists.map( (item, index) => { return {index: index+1, role:item.first_name, fullName:item.last_name}})
+                }
+
               />
             </div>
           </div>
