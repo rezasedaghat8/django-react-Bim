@@ -15,24 +15,24 @@ function ViewWarehouseReport() {
         <Logo />
 
         <WithOutForm>
-          <TitleForm text="مشاهده گزارش انبار" styleCss="text-lg" />
+          <TitleForm text="مشاهده گزارش انبار" styleCss="" />
 
           <LabelForm text="ورودی" styleCss="text-center" />
           <TableForm
-            numRow={1}
             thItems={["ردیف", "نام", "تعداد", "واحد"]}
-            tdItems={{
-              0: [1, "آیتم 1", "3", "واحد4"],
-            }}
+            tdItems={[
+              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+            ]}
           />
 
           <LabelForm text="خروجی" styleCss="text-center mt-7" />
           <TableForm
-            numRow={1}
             thItems={["ردیف", "نام", "تعداد", "واحد"]}
-            tdItems={{
-              0: [1, "آیتم 1", "3", "واحد4"],
-            }}
+            tdItems={[
+              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+            ]}
           />
         </WithOutForm>
       </Center>

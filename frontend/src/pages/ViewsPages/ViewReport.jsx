@@ -14,25 +14,40 @@ function ViewReport() {
       <Center>
         <Logo />
         <WithOutForm>
-          <TitleForm text="مشاهده گزارش" styleCss="text-lg" />
+          <TitleForm text="مشاهده گزارش" styleCss="" />
 
           {/* for tasks */}
           <LabelForm text="تسک ها " styleCss="text-center" />
           <TableForm
-            numRow={1}
-            thItems={["ردیف", "موضوع", "نام", "تعداد", "واجد"]}
-            tdItems={{
-              0: [1, "تسک 2", "آیتم4", "5", "واحد4"],
-            }}
+            thItems={["ردیف", "موضوع", "نام", "تعداد", "واحد"]}
+            tdItems={[
+              {
+                index: 1,
+                subject: "موز",
+                name: "تسک3",
+                quantity: 3,
+                unit: "واحد4",
+              },
+              {
+                index: 1,
+                subject: "موز",
+                name: "تسک3",
+                quantity: 3,
+                unit: "واحد4",
+              },
+            ]}
           />
           {/* for Entered */}
           <LabelForm text="ورودی " styleCss="text-center mt-5" />
           <TableForm
-            numRow={1}
-            thItems={["ردیف", "نام", "تعداد", "واجد"]}
-            tdItems={{
-              0: [1, "آیتم4", "5", "واحد4"],
-            }}
+            thItems={["ردیف", "نام", "تعداد", "واحد"]}
+            // tdItems={{
+            //   0: [1, "آیتم4", "5", "واحد4"],
+            // }}
+            tdItems={[
+              { index: 1, unit: "واحد4", quantity: 3, item: "ایتم3" },
+              { index: 1, unit: "واحد4", quantity: 3, item: "ایتم3" },
+            ]}
           />
 
           {/* for difficulty */}
@@ -78,11 +93,8 @@ function ViewReport() {
           {/* for Meeting */}
           <LabelForm text="جلسه" styleCss="text-center mt-5" />
           <TableForm
-            numRow={1}
             thItems={["ردیف", "نام", "تاریخ"]}
-            tdItems={{
-              0: [1, "جلسه3", "12:00"],
-            }}
+            tdItems={[{ index: 3, name: "جلسه 2", date: "12:00 AM" }]}
           />
         </WithOutForm>
       </Center>

@@ -103,11 +103,10 @@ function AddReport() {
         <Logo />
         <FormikProvider value={formik}>
           <Form formik={formik} styleCss="text-white">
-            <TitleForm styleCss=" text-lg" text="در این قسمت گزارش ادد کنید." />
+            <TitleForm styleCss="" text="در این قسمت گزارش ادد کنید." />
             <div className="my-3 space-y-4">
               <LabelForm text="تسک های موجود :" styleCss="text-lg" />
               <TableForm
-                numRow={1}
                 thItems={[
                   "شماره",
                   "موضوع",
@@ -118,9 +117,25 @@ function AddReport() {
                   "حذف",
                   "مشاهده",
                 ]}
-                tdItems={{
-                  0: [1, "تسک 1", "آیتم 1", 10, "واحد 3"],
-                }}
+                // tdItems={{
+                //   0: [1, "تسک 1", "آیتم 1", 10, "واحد 3"],
+                // }}
+                tdItems={[
+                  {
+                    index: 1,
+                    unit: "واحد3",
+                    quantity: 5,
+                    item: "آیتم3",
+                    task: "تسک2",
+                  },
+                  {
+                    index: 1,
+                    unit: "واحد3",
+                    quantity: 5,
+                    item: "آیتم3",
+                    task: "تسک2",
+                  },
+                ]}
                 itemButton1="ویرایش"
                 itemButton2="حذف"
                 itemButton3="مشاهده"
@@ -136,7 +151,6 @@ function AddReport() {
             <div className="my-5 space-y-4">
               <LabelForm text="ورودی ها :" styleCss="text-lg" />
               <TableForm
-                numRow={1}
                 thItems={[
                   "شماره",
                   "موضوع",
@@ -147,9 +161,15 @@ function AddReport() {
                   "حذف",
                   "مشاهده",
                 ]}
-                tdItems={{
-                  0: [1, "تسک 1", "آیتم 1", 10, "واحد 3"],
-                }}
+                tdItems={[
+                  {
+                    index: 1,
+                    unit: "واحد3",
+                    quantity: 5,
+                    item: "آیتم3",
+                    task: "تسک2",
+                  },
+                ]}
                 itemButton1="ویرایش"
                 itemButton2="حذف"
                 itemButton3="مشاهده"
@@ -317,7 +337,6 @@ function AddReport() {
             <div className="my-5 space-y-4">
               <LabelForm text="جلسه ها :" styleCss="text-lg" />
               <TableForm
-                numRow={1}
                 thItems={[
                   "شماره",
                   "نام",
@@ -327,9 +346,12 @@ function AddReport() {
                   "حذف",
                   "مشاهده",
                 ]}
-                tdItems={{
-                  0: [1, "جلسه 1", "12:00", "ایران"],
-                }}
+                // tdItems={{
+                //   0: [1, "جلسه 1", "12:00", "ایران"],
+                // }}
+                tdItems={[
+                  { index: 1, location: "ایران", time: "12:00", name: "جلسه1" },
+                ]}
                 itemButton1="ویرایش"
                 itemButton2="حذف"
                 itemButton3="مشاهده"
