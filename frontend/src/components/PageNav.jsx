@@ -22,12 +22,21 @@ import { GrUserWorker } from "react-icons/gr";
 import { RxEnter } from "react-icons/rx";
 import { TbReportSearch } from "react-icons/tb";
 import { PiUserListFill } from "react-icons/pi";
+import { useEffect } from "react";
 
 function PageNav() {
+  // scroll to the center and content
+  useEffect(
+    function () {
+      document.body.scrollIntoView();
+    },
+    [NavLink]
+  );
+
   return (
-    <nav className="md:w-1/5 py-2  hidden md:inline-block  border border-l-2 border-dark-gray text-white bg-cazyTaupe">
-      <div className="mx-4  min-h-full border border-gray-400 bg-softPeach clipPathPolygon  rounded-lg  p-2">
-        <ul className="gap-1  space-y-3 my-14 mb-16  [&>*]:w-full  ">
+    <nav className="md:w-1/5 py-2    hidden md:inline-block  border border-l-2 border-dark-gray text-white bg-cazyTaupe">
+      <div className="mx-4   border border-gray-400 bg-softPeach clipPathPolygon  rounded-lg  p-2">
+        <ul className="gap-1  space-y-3 my-14 mb-24  [&>*]:w-full  ">
           <div className="flex items-start  pr-3 text-gray-300 ">
             <p className="font-extralight">منوی اصلی </p>
           </div>
