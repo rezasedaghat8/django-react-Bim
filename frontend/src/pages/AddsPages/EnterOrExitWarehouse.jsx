@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
 
+
 function EnterOrExitWarehouse() {
   const [enteredOrExited, setEnteredOrExited] = useState([
     "Exited",

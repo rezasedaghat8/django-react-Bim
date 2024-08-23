@@ -59,7 +59,7 @@ function AttendanceList() {
                 // ]}
 
                 tdItems={
-                  lists.map( (item, index) => { return {index: index+1, role:item.first_name, fullName:item.last_name}})
+                  lists.map( (item, index) => { return {index: index+1, role:item.first_name+" "+item.last_name, fullName:"کارگر"}})
                 }
 
               />
@@ -80,7 +80,7 @@ function AttendanceList() {
                 // ]}
 
                 tdItems={
-                  lists.map( (item, index) => { return {index: index+1, role:item.first_name, fullName:item.last_name}})
+                  lists.map( (item, index) => { return {index: index+1, role:item.first_name+" "+item.last_name, fullName:"کارگر"}})
                 }
 
               />

@@ -11,15 +11,19 @@ import axios from 'axios';
 
 // function ViewMeeting() {
 const NotesList = () => {
-    const [notes, setNotes] = useState([]);
+    const [meetings, setMeetings] = useState([]);
+    const [pers, setPers] = useState([]);
+    
   
     useEffect(() => {
       
       // درخواست GET به API برای دریافت داده‌ها
       axios.get('http://localhost:8000/api/viewMeeting/')
         .then(response => {
-          setNotes(response.data.notes);  // داده‌ها را در state ذخیره کنید
-          console.log(response.data.moze)
+          setMeetings(response.data.meetings);  // داده‌ها را در state ذخیره کنید
+          console.log(response.data.meetings);
+          setPers(response.data.pers); 
+          console.log(response.data.pers);
         })
         .catch(error => {
           console.error('Error fetching notes:', error);
@@ -37,22 +41,22 @@ const NotesList = () => {
 
         <WithOutForm>
           <TitleForm text="مشاهده جلسه" styleCss="text-lg" />
-          {notes.map(note => (
-          <LazyBackground key={note.id}>
+          {meetings.map((meeting, index) => (
+          <LazyBackground key={meeting.id}>
             <DetailMeeting
-              index="1:"
+              index={index+1 + " :"}
               nameLabel="نام : "
-              nameResult= { note.title }
+              nameResult= { meeting.name }
               dateLabel="تاریخ :"
-              dateResult="00 : 00  AM"
+              dateResult={ meeting.date }
               durationLabel="مدت زمان (ساعت)"
-              durationResult="زمان دلخواه"
+              durationResult={ meeting.duration }
               proceedingLabel="شرح مذاکرات : "
-              proceedingResult="توضیح دلخواه"
+              proceedingResult={ meeting.proceedings }
               agendaLabel="دستور جلسه :"
-              agendaResult=" توضیح دلخواه"
+              agendaResult={ meeting.agenda }
               personnelsLabel="پرسنل(ها) : "
-              personnelsResult="هومن خلیلی - هومن خلیلی - هومن خلیلی"
+              personnelsResult= { pers[index].map((item) => ( item.map((obj) => ( obj.first_name+" "+obj.last_name+" , ")) ))}
             />
           </LazyBackground>
         ))}

@@ -9,14 +9,39 @@ import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
 import { useFormik } from "formik";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import sendDataToServer from "../../services/helper";
 
-const optionsForProject = [
-  { label: "پروژه 1", value: "ProjectA" },
-  { label: "پروژه2", value: "ProjectB" },
-  { label: "پروژه 3", value: "ProjectC" },
-];
+
+// const optionsForProject = [
+//   { label: "پروژه 1", value: "ProjectA" },
+//   { label: "پروژه2", value: "ProjectB" },
+//   { label: "پروژه 3", value: "ProjectC" },
+// ];
 
 function AddSubject() {
+  
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    
+    // درخواست GET به API برای دریافت داده‌ها
+    axios.get('http://localhost:8000/api/addSubject/')
+      .then(response => {
+        setProjects(response.data.serializer_projects);  // داده‌ها را در state ذخیره کنید
+        console.log(response.data.serializer_projects);
+      })
+      .catch(error => {
+        console.error('Error fetching personnels:', error);
+      });
+
+
+  }, []);
+  
+const optionsForProject = projects.map(item => {return{label: item.project_name, value: item.id}})
+  
+  
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -25,6 +50,7 @@ function AddSubject() {
     },
     onSubmit: (values) => {
       console.log(values);
+      sendDataToServer(values, "addSubject")
     },
     validate: (values) => {
       let errors = {};

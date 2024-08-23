@@ -150,13 +150,13 @@ class addAttended(APIView): # Done
 @permission_classes([AllowAny])
 class attendanceList(APIView): #Not done / ( table part )
     def get(self, request, *args, **kwargs):
-        attendance_items = AttendanceList.objects.all()
+        date_now = datetime.now().date()
+        attendance_items = AttendanceList.objects.filter(date=date_now)
         personnel_array = []
         for item in attendance_items:
             person = Personnel.objects.get(national_id=item.national_id_id)
             personnel_array.append(person)
         serializer = PersonnelSerializer(personnel_array, many=True)  # Serialize the list of objects
-        date_now = datetime.now().date()
         
         return JsonResponse({'personnel_array': serializer.data})
         
@@ -333,22 +333,76 @@ class addWorker(APIView): #Done
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+
+# @csrf_exempt  
+# def enteredWarehouse(request): # Done
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         originName = data.get('originName', None)
+#         description = data.get('description', None)
+#         bankNumber = data.get('bankNumber', None)
+#         number = data.get('number', None)
+#         quality = data.get('quality', None)
+#         gain = data.get('gain', None)
+#         city = data.get('city', None)
+#         street = data.get('street', None)
         
-class viewMeeting(View):
+#         new_origin = Origins.objects.create(name=originName, description=description, bank_number=bankNumber, number=number, quality=quality, gain=gain, city=city, street=street)
+#         print(new_origin)
+        
+#         return JsonResponse({'message': 'Data received successfully'})
+#     return JsonResponse({'error': 'Invalid request'}, status=400)    
+     
+ 
+@permission_classes([AllowAny])
+class addSubject(APIView): #Done
     def get(self, request, *args, **kwargs):
-        # نمونه‌ای از داده‌ها
-        notes = [
-            {'id': 1, 'title': 'Taha', 'content': 'This is Goat'},
-            {'id': 2, 'title': 'Sahrayi', 'content': 'This is Bitch'}
-        ]
+        projects = Projects.objects.all()
+        serializer_projects = ProjectsSerializer(projects, many=True)
         
-        moze = [
-            {'id': 1, 'title': 'Reza', 'content': 'This is Goat'},
-            {'id': 2, 'title': 'Sedaghat', 'content': 'This is Bitch'}
-        ]
+        return JsonResponse({'serializer_projects':serializer_projects.data})
         
-        # برگرداندن داده‌ها به صورت JSON
-        return JsonResponse({'notes': notes, 'moze': moze})    
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            name = data.get('name', None)
+            project_id = data.get('project', None)
+            project = Projects.objects.get(id=project_id)
+            estimatedTime = data.get('estimatedTime', None)
+            
+            new_subject = Subjects.objects.create(name=name, project_id=project, estimated_time=estimatedTime)
+            print(new_subject)
+                
+            return JsonResponse({'message': 'Data received successfully'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)     
+
+        
+@permission_classes([AllowAny])
+class viewMeeting(APIView): # Done
+    def get(self, request, *args, **kwargs):
+        meetings = Meetings.objects.all()
+        serializer = MeetingsSerializer(meetings, many=True)  # Serialize the list of objects
+        
+        per = [[] for _ in range(len(meetings))]
+        for index, meeting in enumerate(meetings):
+            personnels = []
+            person_id = MeetingPersonnel.objects.filter(meeting_id=meeting)
+            for item in person_id:    
+                person = Personnel.objects.get(id=item.personnel_id_id)
+                personnels.append(person)
+            
+            serialized_personnels = PersonnelSerializer(personnels, many=True).data
+            per[index].append(serialized_personnels)
+                            
+        return JsonResponse({'meetings': serializer.data, 'pers':per})
+
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        if request.method == 'POST':
+            print("hello")
+            return JsonResponse({'message': 'Data received successfully'})
+        return JsonResponse({'error': 'Invalid request'}, status=400)      
     
     
 class itemList(View):

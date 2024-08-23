@@ -21,6 +21,8 @@ urlpatterns = [
     path('api/addTask/', addTask.as_view(), name='addTask'), 
     path('api/addMeeting/', addMeeting.as_view(), name='addMeeting'),  
     path('api/addOrigin/', addOrigin, name='addOrigin'),   
-    path('api/addWorker/', addWorker.as_view(), name='addWorker'),
+    path('api/addWorker/', addWorker.as_view(), name='addWorker'),    
+    # path('api/enteredWarehouse/', enteredWarehouse, name='enteredWarehouse'), 
+    path('api/addSubject/', addSubject.as_view(), name='addSubject'),
 ]
 
