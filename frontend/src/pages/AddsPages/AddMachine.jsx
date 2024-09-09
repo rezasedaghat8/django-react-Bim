@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import Form from "../../components/Form";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
@@ -6,8 +9,6 @@ import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useMenuBarContext } from "../../context/MenuBarContext";
-import { useFormik } from "formik";
 
 const optionsForMachineName = [
   { label: "دستگاه 1", value: "MachineA" },
@@ -32,7 +33,7 @@ function AddMachine() {
     },
     onSubmit: (values, { resetForm }) => {
       console.log(values);
-      toast.success("با موفقیت ثبت شد");
+      // toast.success("با موفقیت ثبت شد");
       resetForm();
       // Scroll to top after form submission
       window.scrollTo({ top: 0, behavior: "smooth" });

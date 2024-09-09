@@ -1,5 +1,3 @@
-import { NavLink } from "react-router-dom";
-
 function SubmitBtn({
   type = "submit",
   togoPage,
@@ -8,7 +6,7 @@ function SubmitBtn({
   styleToNavLivk = "",
 }) {
   return (
-    <button type={type} class={`mt-5 mb-4 md:mb-0  ${styleToBtn}`}>
+    <button type={type} className={`mt-5 mb-4 md:mb-0  ${styleToBtn}`}>
       {/* <NavLink to={togoPage} className={`${styleToNavLivk}  `}>
         {textOfSubmit}
       </NavLink> */}

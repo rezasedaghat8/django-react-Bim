@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import TitleForm from "../../components/TitleForm";
 import Form from "../../components/Form";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
@@ -42,7 +43,7 @@ function AddProject() {
     },
     onSubmit: (values, { resetForm }) => {
       console.log(values);
-      toast.success("با موفقیت ثبت شد");
+      // toast.success("با موفقیت ثبت شد");
       resetForm();
       // Scroll to top after form submission
       window.scrollTo({ top: 0, behavior: "smooth" });

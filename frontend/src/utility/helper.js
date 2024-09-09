@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const sendDataToServer = (data, url) => {
   axios
@@ -6,9 +7,11 @@ const sendDataToServer = (data, url) => {
     .then((response) => {
       console.log("Data sent successfully:", response.data);
       console.log(data);
+      toast.success("با موفقیت ثبت شد");
     })
     .catch((error) => {
       console.error("There was an error sending the data:", error);
+      toast.error("مشکلی در انجام عملیات رخ داد ");
     });
 };
 

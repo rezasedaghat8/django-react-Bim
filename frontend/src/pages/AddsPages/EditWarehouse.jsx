@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import InputForm from "../../components/InputForm";
 import LabelForm from "../../components/LabelForm";
 import SubmitBtn from "../../components/SubmitBtn";
@@ -43,7 +44,7 @@ function EditWarehouse() {
     },
     onSubmit: (values, { resetForm }) => {
       console.log(values);
-      toast.success("با موفقیت ثبت شد");
+      // toast.success("با موفقیت ثبت شد");
       resetForm();
       // Scroll to top after form submission
       window.scrollTo({ top: 0, behavior: "smooth" });
