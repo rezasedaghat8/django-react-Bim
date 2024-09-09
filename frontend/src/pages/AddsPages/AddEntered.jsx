@@ -1,8 +1,5 @@
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
 import Form from "../../components/Form";
 import TitleForm from "../../components/TitleForm";
 import InputForm from "../../components/InputForm";
@@ -11,16 +8,10 @@ import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import axios from "axios";
+import sendDataToServer from "../../utility/helper";
 
-
-// option for Searchable select Tag Unit
-// const optionForUnit = [
-//   { label: "واحد 1", value: "UnitA" },
-//   { label: "واحد 2", value: "UnitB" },
-//   { label: "واحد 3", value: "Unit3" },
-// ];
 // option for Searchable select tag Origin
 // const optionForOrigin = [
 //   { label: "بنیاد 1", value: "Origin A" },
@@ -29,31 +20,31 @@ import sendDataToServer from "../../services/helper";
 // ];
 
 function AddEntered() {
-  
   const [origins, setOrigins] = useState([]);
   const [units, setUnits] = useState([]);
 
-    useEffect(() => {
-      
-      // درخواست GET به API برای دریافت داده‌ها
-      axios.get('http://localhost:8000/api/addEntered/')
-        .then(response => {
-          setOrigins(response.data.serializer_origin);
-          setUnits(response.data.serializer_unit);
-          console.log(response.data.serializer_origin);
-          console.log(response.data.serializer_unit);
-        })
-        .catch(error => {
-          console.error('Error fetching notes:', error);
-        });
+  useEffect(() => {
+    // درخواست GET به API برای دریافت داده‌ها
+    axios
+      .get("http://localhost:8000/api/addEntered/")
+      .then((response) => {
+        setOrigins(response.data.serializer_origin);
+        setUnits(response.data.serializer_unit);
+        console.log(response.data.serializer_origin);
+        console.log(response.data.serializer_unit);
+      })
+      .catch((error) => {
+        console.error("Error fetching notes:", error);
+      });
+  }, []);
 
+  const optionForUnit = units.map((unit) => {
+    return { label: unit.name, value: unit.id };
+  });
 
-    }, []);
-
-const optionForUnit = units.map(unit => {return{label: unit.name, value: unit.id}})
-
-const optionForOrigin = origins.map(origin => {return{label: origin.name, value: origin.id}})
-
+  const optionForOrigin = origins.map((origin) => {
+    return { label: origin.name, value: origin.id };
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -64,9 +55,13 @@ const optionForOrigin = origins.map(origin => {return{label: origin.name, value:
       pricePerUnit: "",
       origin: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
-      sendDataToServer(values, "addEntered")
+      sendDataToServer(values, "addEntered");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -98,113 +93,116 @@ const optionForOrigin = origins.map(origin => {return{label: origin.name, value:
     },
   });
 
-  console.log(formik.values);
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
 
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="" text="در این قسمت میتوانید ورودی ادد کنید." />
 
-      <Center>
-        <Logo />
-
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید ورودی ادد کنید."
+        <LabelForm forInput="name" text="نام و نام خانوادگی : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="name"
+          placeholder="نام و نام خانوادگی را وارد کنید ..."
+          id="name"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.name && formik.errors.name ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.name}
           />
+        ) : null}
 
-          <LabelForm text="نام و نام خانوادگی : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="name"
-            id="name"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="description" text=" توضیحات : " />
+        <TextArea
+          formik={formik}
+          name="description"
+          placeholder="توضیحات را وارد کنید ..."
+          id="description"
+          row={5}
+        />
+        {formik.touched.description && formik.errors.description ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.description}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.name}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text=" توضیحات : " />
-          <TextArea
-            formik={formik}
-            name="description"
-            id="description"
-            row={5}
+        <LabelForm forInput="unit" text="واحد(یونیت) :" />
+        <SearchableSelectTag
+          options={optionForUnit}
+          formik={formik}
+          isMulti={false}
+          placeholder="واحد را وارد کنید ..."
+          id="unit"
+          name="unit"
+        />
+        {formik.touched.unit && formik.errors.unit ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.unit}
           />
-          {formik.touched.description && formik.errors.description ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.description}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm forInput="unit" text="واحد(یونیت) :" />
-          <SearchableSelectTag
-            options={optionForUnit}
-            formik={formik}
-            isMulti={false}
-            id="unit"
-            name="unit"
+        <LabelForm forInput="quantity" text="کمیت(کوانتیتی): " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="quantity"
+          placeholder="تعداد را وارد کنید ..."
+          id="quantity"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.quantity && formik.errors.quantity ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.quantity}
           />
-          {formik.touched.unit && formik.errors.unit ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.unit}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="کمیت(کوانتیتی): " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="quantity"
-            id="quantity"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="pricePerUnit" text="قیمت به ازای هر واحد: " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="pricePerUnit"
+          placeholder="قیمت به ازای هر واحد را وارد کنید ..."
+          id="pricePerUnit"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.pricePerUnit && formik.errors.pricePerUnit ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.pricePerUnit}
           />
-          {formik.touched.quantity && formik.errors.quantity ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.quantity}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm forInput="pricePerUnit" text="قیمت به ازای هر واحد: " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="pricePerUnit"
-            id="pricePerUnit"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="origin" text="بنیاد(اریجین) :" />
+        <SearchableSelectTag
+          options={optionForOrigin}
+          formik={formik}
+          isMulti={false}
+          placeholder="بنیاد را وارد کنید ..."
+          id="origin"
+          name="origin"
+        />
+        {formik.touched.origin && formik.errors.origin ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.origin}
           />
-          {formik.touched.pricePerUnit && formik.errors.pricePerUnit ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.pricePerUnit}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm forInput="origin" text="بنیاد(اریجین) :" />
-          <SearchableSelectTag
-            options={optionForOrigin}
-            formik={formik}
-            isMulti={false}
-            id="origin"
-            name="origin"
-          />
-          {formik.touched.origin && formik.errors.origin ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.origin}
-            />
-          ) : null}
-
-          <SubmitBtn textOfSubmit="ثبت" styleToBtn="submitBtns" />
-        </Form>
-      </Center>
+        <SubmitBtn textOfSubmit="ثبت" styleToBtn="submitBtns" />
+      </Form>
     </>
   );
 }

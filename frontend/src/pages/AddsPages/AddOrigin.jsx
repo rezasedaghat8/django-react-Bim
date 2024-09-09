@@ -1,6 +1,4 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
+import { useFormik } from "formik";
 import Form from "../../components/Form";
 import InputForm from "../../components/InputForm";
 import LabelForm from "../../components/LabelForm";
@@ -8,11 +6,9 @@ import ErrorMessage from "../../components/ErrorMessage";
 import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
-
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import React, { useEffect } from "react";
+import sendDataToServer from "../../utility/helper";
 
 function AddOrigin() {
   const formik = useFormik({
@@ -26,9 +22,13 @@ function AddOrigin() {
       city: "",
       street: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
-      sendDataToServer(values, "addOrigin")
+      sendDataToServer(values, "addOrigin");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -68,144 +68,152 @@ function AddOrigin() {
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="" text="در این قسمت میتوانید اریجین ادد کنید." />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید اریجین ادد کنید."
+        <LabelForm forInput="originName" text="نام : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="originName"
+          id="originName"
+          placeholder="نام را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.originName && formik.errors.originName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.originName}
           />
+        ) : null}
 
-          <LabelForm text="نام : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="originName"
-            id="originName"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="description" text="توضیحات : " />
+        <TextArea
+          formik={formik}
+          row={5}
+          name="description"
+          id="description"
+          placeholder="توضیحات را وارد کنید ..."
+        />
+        {formik.touched.description && formik.errors.description ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.description}
           />
-          {formik.touched.originName && formik.errors.originName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.originName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="توضیحات : " />
-          <TextArea
-            formik={formik}
-            row={5}
-            name="description"
-            id="description"
+        <LabelForm forInput="bankNumber" text="شماره بانک : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="bankNumber"
+          id="bankNumber"
+          placeholder="شماره کارت را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.bankNumber && formik.errors.bankNumber ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.bankNumber}
           />
-          {formik.touched.description && formik.errors.description ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.description}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شماره بانک : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="bankNumber"
-            id="bankNumber"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="number" text="شماره : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="number"
+          id="number"
+          placeholder="شماره تلفن را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.number && formik.errors.number ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.number}
           />
-          {formik.touched.bankNumber && formik.errors.bankNumber ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.bankNumber}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شماره : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="number"
-            id="number"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="quality" text="کیفیت(کوالیتی) : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="quality"
+          id="quality"
+          placeholder="کیفیت را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.quality && formik.errors.quality ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.quality}
           />
-          {formik.touched.number && formik.errors.number ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.number}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="کیفیت(کوالیتی) : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="quality"
-            id="quality"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="gain" text="سود (گین): " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="gain"
+          id="gain"
+          placeholder="سود را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.gain && formik.errors.gain ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.gain}
           />
-          {formik.touched.quality && formik.errors.quality ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.quality}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="سود (گین): " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="gain"
-            id="gain"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="city" text="شهر : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="city"
+          id="city"
+          placeholder="شهر را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.city && formik.errors.city ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.city}
           />
-          {formik.touched.gain && formik.errors.gain ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.gain}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شهر : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="city"
-            id="city"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="street" text="خیابان : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="street"
+          id="street"
+          placeholder="خیابان را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.street && formik.errors.street ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.street}
           />
-          {formik.touched.city && formik.errors.city ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.city}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="خیابان : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="street"
-            id="street"
-            styleInput="rounded-md  text-black"
-          />
-          {formik.touched.street && formik.errors.street ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.street}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

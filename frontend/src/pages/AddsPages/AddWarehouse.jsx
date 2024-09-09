@@ -1,17 +1,12 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-// import Logo from "../components/Logo";
+import { useFormik } from "formik";
 import Form from "../../components/Form";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
 import TitleForm from "../../components/TitleForm";
 import ErrorMessage from "../../components/ErrorMessage";
 import SubmitBtn from "../../components/SubmitBtn";
-import { useFormik } from "formik";
-import Logo from "../../components/Logo";
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
-
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import sendDataToServer from "../../utility/helper";
 
 function AddWarehouse() {
   const formik = useFormik({
@@ -19,10 +14,12 @@ function AddWarehouse() {
       warehouseName: "",
       location: "",
     },
-    onSubmit: (values) => {
-
-      sendDataToServer(values, "addWarehouse")
-    
+    onSubmit: (values, { resetForm }) => {
+      sendDataToServer(values, "addWarehouse");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -37,56 +34,58 @@ function AddWarehouse() {
       return errors;
     },
   });
+
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="" text="در این قسمت میتوانید انبار ادد کنید." />
 
-      <Center>
-        <Logo />
-
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید انبار ادد کنید."
+        <LabelForm forInput="warehouseName" text="نام  : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="warehouseName"
+          id="warehouseName"
+          placeholder="نام را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.warehouseName && formik.errors.warehouseName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.warehouseName}
           />
+        ) : null}
 
-          <LabelForm text="نام  : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="warehouseName"
-            id="warehouseName"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="location" text="لوکیشن : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="location"
+          id="location"
+          placeholder="لوکیشن را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.location && formik.errors.location ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.location}
           />
-          {formik.touched.warehouseName && formik.errors.warehouseName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.warehouseName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="لوکیشن : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="location"
-            id="location"
-            styleInput="rounded-md  text-black"
-          />
-          {formik.touched.location && formik.errors.location ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.location}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

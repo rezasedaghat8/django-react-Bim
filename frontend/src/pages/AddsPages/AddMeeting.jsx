@@ -1,5 +1,4 @@
 import { useFormik } from "formik";
-import PageNav from "../../components/PageNav";
 import TitleForm from "../../components/TitleForm";
 import LabelForm from "../../components/LabelForm";
 import Form from "../../components/Form";
@@ -7,14 +6,11 @@ import SearchableSelectTag from "../../components/SearchableSelectTag";
 import ErrorMessage from "../../components/ErrorMessage";
 import InputForm from "../../components/InputForm";
 import SubmitBtn from "../../components/SubmitBtn";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
 import TextArea from "../../components/TextArea";
-// import { DatePicker, TimePicker } from "zaman";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
-
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import sendDataToServer from "../../utility/helper";
 
 // const optionsForPersonnelName = [
 //   { label: "پرسنل 1", value: "personnel A" },
@@ -23,28 +19,26 @@ import sendDataToServer from "../../services/helper";
 // ];
 
 function AddMeeting() {
-  
   const [personnels, setPersonnels] = useState([]);
 
   useEffect(() => {
-    
     // درخواست GET به API برای دریافت داده‌ها
-    axios.get('http://localhost:8000/api/addMeeting/')
-      .then(response => {
-        setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+    axios
+      .get("http://localhost:8000/api/addMeeting/")
+      .then((response) => {
+        setPersonnels(response.data.serializer_personnels); // داده‌ها را در state ذخیره کنید
         console.log(response.data.serializer_personnels);
       })
-      .catch(error => {
-        console.error('Error fetching personnels:', error);
+      .catch((error) => {
+        console.error("Error fetching personnels:", error);
       });
-
-
   }, []);
-  
-const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
 
-  
-const formik = useFormik({
+  const optionsForPersonnelName = personnels.map((item) => {
+    return { label: item.first_name, value: item.id };
+  });
+
+  const formik = useFormik({
     initialValues: {
       name: "",
       time: "",
@@ -53,9 +47,13 @@ const formik = useFormik({
       agenda: "",
       personnel: [],
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
-      sendDataToServer(values, "addMeeting")
+      sendDataToServer(values, "addMeeting");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -87,115 +85,121 @@ const formik = useFormik({
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm
+          styleCss=""
+          text="در این قسمت میتوانید دستگاه را ادد کنید."
+        />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید دستگاه را ادد کنید."
+        <LabelForm forInput="name" text="نام  : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="name"
+          placeholder="نام را وارد کنید ..."
+          id="name"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.name && formik.errors.name ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.name}
           />
+        ) : null}
 
-          <LabelForm text="نام  : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="name"
-            id="name"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="time" text="زمان  : " />
+        <InputForm
+          formik={formik}
+          type="time"
+          name="time"
+          id="time"
+          placeholder="زمان تخمینی را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.time && formik.errors.time ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.time}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.name}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="زمان  : " />
-          <InputForm
-            formik={formik}
-            type="time"
-            name="time"
-            id="time"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="duration" text="مدت   : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="duration"
+          id="duration"
+          placeholder="مدت زمان را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.duration && formik.errors.duration ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.duration}
           />
-          {formik.touched.time && formik.errors.time ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.time}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="مدت   : ( دقیقه )" />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="duration"
-            id="duration"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="proceeding" text="شرح مذاکرات  : " />
+        <TextArea
+          formik={formik}
+          name="proceeding"
+          id="proceeding"
+          placeholder="شرح  مذاکرات را وارد کنید ..."
+          row={5}
+        />
+        {formik.touched.proceeding && formik.errors.proceeding ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.proceeding}
           />
-          {formik.touched.duration && formik.errors.duration ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.duration}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شرح مذاکرات  : " />
-          <TextArea
-            formik={formik}
-            name="proceeding"
-            id="proceeding"
-            row={5}
-            placeholder="چیزی بنوسید..."
+        <LabelForm forInput="agenda" text="دستور جلسه  : " />
+        <TextArea
+          formik={formik}
+          name="agenda"
+          id="agenda"
+          row={5}
+          placeholder="دستور جلسه را وارد کنید ..."
+        />
+        {formik.touched.agenda && formik.errors.agenda ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.agenda}
           />
-          {formik.touched.proceeding && formik.errors.proceeding ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.proceeding}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="دستور جلسه  : " />
-          <TextArea
-            formik={formik}
-            name="agenda"
-            id="agenda"
-            row={5}
-            placeholder="چیزی بنویسید..."
+        <LabelForm forInput="personnel" text="پرسنل ها :" />
+        <SearchableSelectTag
+          options={optionsForPersonnelName}
+          name="personnel"
+          isMulti={true}
+          id="personnel"
+          formik={formik}
+        />
+        {formik.touched.personnel && formik.errors.personnel ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.personnel}
           />
-          {formik.touched.agenda && formik.errors.agenda ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.agenda}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="پرسنل ها :" />
-          <SearchableSelectTag
-            options={optionsForPersonnelName}
-            name="personnel"
-            isMulti={true}
-            id="personnel"
-            formik={formik}
-          />
-          {formik.touched.personnel && formik.errors.personnel ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.personnel}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

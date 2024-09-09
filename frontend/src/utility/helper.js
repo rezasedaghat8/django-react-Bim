@@ -1,19 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
 
 const sendDataToServer = (data, url) => {
-    axios.post(`http://localhost:8000/api/${url}/`, data)
-      .then(response => {
-        console.log('Data sent successfully:', response.data);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('There was an error sending the data:', error);
-      });
+  axios
+    .post(`http://localhost:8000/api/${url}/`, data)
+    .then((response) => {
+      console.log("Data sent successfully:", response.data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("There was an error sending the data:", error);
+    });
 };
 
 export default sendDataToServer;
 
-// const getDataFromServer = (setDatum, datum, url) =>{ 
+// const getDataFromServer = (setDatum, datum, url) =>{
 //     // درخواست GET به API برای دریافت داده‌ها
 //     axios.get(`http://localhost:8000/api/${url}/`)
 //     .then(response => {
@@ -24,7 +25,3 @@ export default sendDataToServer;
 //     console.error('Error fetching notes:', error);
 // });
 // };
-
-
-
-

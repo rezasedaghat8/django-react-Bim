@@ -1,17 +1,12 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
+import { useFormik } from "formik";
 import Form from "../../components/Form";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
-// import SearchableSelectTag from "../components/SearchableSelectTag";
 import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
-import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useFormik } from "formik";
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import sendDataToServer from "../../utility/helper";
 
 function AddPersonnel() {
   const formik = useFormik({
@@ -22,10 +17,12 @@ function AddPersonnel() {
       wage: "",
       bankNumber: "",
     },
-    onSubmit: (values) => {
-
-      sendDataToServer(values, "addPersonnel")
-    
+    onSubmit: (values, { resetForm }) => {
+      sendDataToServer(values, "addPersonnel");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -55,100 +52,109 @@ function AddPersonnel() {
       return errors;
     },
   });
+
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm
+          styleCss=" text-lg "
+          text="در این قسمت میتوانید پرسنل ادد کنید."
+        />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید پرسنل ادد کنید."
+        <LabelForm forInput="firstName" text="نام  : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="firstName"
+          id="firstName"
+          placeholder="نام را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.firstName && formik.errors.firstName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.firstName}
           />
+        ) : null}
 
-          <LabelForm text="نام  : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="firstName"
-            id="firstName"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="lastName" text="نام خانوادگی : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="lastName"
+          id="lastName"
+          placeholder="نام خانوادگی را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.lastName && formik.errors.lastName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.lastName}
           />
-          {formik.touched.firstName && formik.errors.firstName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.firstName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="نام خانوادگی : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="lastName"
-            id="lastName"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="number" text="شماره تلفن : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="number"
+          id="number"
+          placeholder="شماره تلفن را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.number && formik.errors.number ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.number}
           />
-          {formik.touched.lastName && formik.errors.lastName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.lastName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شماره تلفن : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="number"
-            id="number"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="wage" text=" دستمزد : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="wage"
+          placeholder="دستمزد را وارد کنید ..."
+          id="wage"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.wage && formik.errors.wage ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.wage}
           />
-          {formik.touched.number && formik.errors.number ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.number}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text=" دستمزد : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="wage"
-            id="wage"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="bankNumber" text="شماره بانک : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="bankNumber"
+          id="bankNumber"
+          placeholder="شماره بانک را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.bankNumber && formik.errors.bankNumber ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.bankNumber}
           />
-          {formik.touched.wage && formik.errors.wage ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.wage}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="شماره بانک : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="bankNumber"
-            id="bankNumber"
-            styleInput="rounded-md  text-black"
-          />
-          {formik.touched.bankNumber && formik.errors.bankNumber ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.bankNumber}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

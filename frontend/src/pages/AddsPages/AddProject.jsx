@@ -1,12 +1,10 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
 import TitleForm from "../../components/TitleForm";
 import Form from "../../components/Form";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
 import LabelForm from "../../components/LabelForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import { useFormik } from "formik";
 
 // option for employer name Selector
@@ -42,7 +40,13 @@ function AddProject() {
       projectName: "",
       executerName: "",
     },
-    onSubmit: (values) => console.log(values),
+    onSubmit: (values, { resetForm }) => {
+      console.log(values);
+      toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
     validate: (values) => {
       let errors = {};
       if (!values.employerName) {
@@ -61,88 +65,85 @@ function AddProject() {
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="" text="در این قسمت میتوانید پروژه ادد  کنید." />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید پروژه ادد  کنید."
+        <LabelForm forInput="employerName" text="نام کارمند:" />
+        <SearchableSelectTag
+          options={optionsForEmployerName}
+          formik={formik}
+          isMulti={false}
+          id="employerName"
+          name="employerName"
+        />
+        {formik.touched.employerName && formik.errors.employerName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.employerName}
           />
+        ) : null}
 
-          <LabelForm forInput="employerName" text="نام کارمند:" />
-          <SearchableSelectTag
-            options={optionsForEmployerName}
-            formik={formik}
-            isMulti={false}
-            id="employerName"
-            name="employerName"
+        <LabelForm forInput="architectName" text="نام معمار :" />
+        <SearchableSelectTag
+          options={optionsForArchitectName}
+          formik={formik}
+          isMulti={false}
+          id="architectName"
+          name="architectName"
+        />
+        {formik.touched.architectName && formik.errors.architectName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.architectName}
           />
-          {formik.touched.employerName && formik.errors.employerName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.employerName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm forInput="architectName" text="نام معمار :" />
-          <SearchableSelectTag
-            options={optionsForArchitectName}
-            formik={formik}
-            isMulti={false}
-            id="architectName"
-            name="architectName"
+        <LabelForm forInput="projectName" text="نام پروژه :" />
+        <SearchableSelectTag
+          options={optionsForProjectName}
+          formik={formik}
+          isMulti={false}
+          id="projectName"
+          name="projectName"
+        />
+        {formik.touched.projectName && formik.errors.projectName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.projectName}
           />
-          {formik.touched.architectName && formik.errors.architectName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.architectName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm forInput="projectName" text="نام پروژه :" />
-          <SearchableSelectTag
-            options={optionsForProjectName}
-            formik={formik}
-            isMulti={false}
-            id="projectName"
-            name="projectName"
+        <LabelForm forInput="executerName" text="نام اجرا کننده(اکزکیوتر) :" />
+        <SearchableSelectTag
+          options={optionsForExecuterName}
+          formik={formik}
+          isMulti={false}
+          id="executerName"
+          name="executerName"
+        />
+        {formik.touched.executerName && formik.errors.executerName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.executerName}
           />
-          {formik.touched.projectName && formik.errors.projectName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.projectName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm
-            forInput="executerName"
-            text="نام اجرا کننده(اکزکیوتر) :"
-          />
-          <SearchableSelectTag
-            options={optionsForExecuterName}
-            formik={formik}
-            isMulti={false}
-            id="executerName"
-            name="executerName"
-          />
-          {formik.touched.executerName && formik.errors.executerName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.executerName}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

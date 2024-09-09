@@ -1,15 +1,12 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
 import Form from "../../components/Form";
 import TitleForm from "../../components/TitleForm";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
-import { useFormik } from "formik";
-import { useEffect, useState } from "react";
 import SubmitBtn from "../../components/SubmitBtn";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import ErrorMessage from "../../components/ErrorMessage";
-
 
 function EnterOrExitWarehouse() {
   const [enteredOrExited, setEnteredOrExited] = useState([
@@ -22,8 +19,12 @@ function EnterOrExitWarehouse() {
       itemID: "",
       quantity: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -59,73 +60,78 @@ function EnterOrExitWarehouse() {
     [formik.values.type]
   );
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="" text="ورود یا خروج انبار" />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm styleCss=" text-lg " text="ورود یا خروج انبار" />
-
-          <div className=" text-right flex gap-2">
-            <LabelForm text="نوع :" />
-            <InputForm
-              formik={formik}
-              type="checkbox"
-              name="type"
-              id="type"
-              styleInput="accent-ToastedAlmond"
-            />
-            <span className={`${enteredOrExited[1]} text-lg`}>
-              {enteredOrExited[0]}
-            </span>
-          </div>
-
-          {formik.touched.type && formik.errors.type ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.type}
-            />
-          ) : null}
-
-          <LabelForm text="آیدی آیتم" />
+        <div className=" text-right flex items-center gap-2">
+          <LabelForm forInput="type" text="نوع :" />
           <InputForm
             formik={formik}
-            type="text"
-            name="itemID"
-            id="itemID"
-            styleInput="rounded-md  text-black"
+            type="checkbox"
+            name="type"
+            id="type"
+            styleInput="  dark:accent-ToastedAlmond accent-gray-500"
           />
-          {formik.touched.itemID && formik.errors.itemID ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.itemID}
-            />
-          ) : null}
+          <span className={`${enteredOrExited[1]} text-lg`}>
+            {enteredOrExited[0]}
+          </span>
+        </div>
 
-          <LabelForm text="کمیت(کوانتیتی)" />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="quantity"
-            id="quantity"
-            styleInput="rounded-md  text-black"
+        {formik.touched.type && formik.errors.type ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.type}
           />
-          {formik.touched.quantity && formik.errors.quantity ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.quantity}
-            />
-          ) : null}
+        ) : null}
 
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
+        <LabelForm forInput="itemID" text="آیدی آیتم" />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="itemID"
+          placeholder="آیدی آیتم را وارد کنید ..."
+          id="itemID"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.itemID && formik.errors.itemID ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.itemID}
           />
-        </Form>
-      </Center>
+        ) : null}
+
+        <LabelForm forInput="quantity" text="کمیت(کوانتیتی)" />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="quantity"
+          id="quantity"
+          placeholder="تعداد را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.quantity && formik.errors.quantity ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.quantity}
+          />
+        ) : null}
+
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }
