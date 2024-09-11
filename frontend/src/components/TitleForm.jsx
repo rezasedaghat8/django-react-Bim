@@ -1,7 +1,7 @@
 function TitleForm({ text, styleCss }) {
   return (
     <span
-      class={`text-3xl font-extrabold tracking-wider mb-3 text-semiWhite ${styleCss} `}
+      class={`md:text-lg text-base  font-extrabold tracking-wider mb-3 dark:text-semiWhite text-gray-700 ${styleCss} `}
     >
       {text}
     </span>

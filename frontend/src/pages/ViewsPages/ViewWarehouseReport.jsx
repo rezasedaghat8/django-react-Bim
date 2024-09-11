@@ -1,41 +1,42 @@
-import Center from "../../components/Center";
+import React, { useEffect } from "react";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import LabelForm from "../../components/LabelForm";
-import Logo from "../../components/Logo";
-import PageNav from "../../components/PageNav";
 import TableForm from "../../components/TableForm";
 import TitleForm from "../../components/TitleForm";
 import WithOutForm from "../../components/WithoutForm";
 
 function ViewWarehouseReport() {
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <WithOutForm>
+        <TitleForm text="مشاهده گزارش انبار" styleCss="" />
 
-      <Center>
-        <Logo />
+        <LabelForm text="ورودی" styleCss="text-center" />
+        <TableForm
+          thItems={["ردیف", "نام", "تعداد", "واحد"]}
+          tdItems={[
+            { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+            { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+          ]}
+        />
 
-        <WithOutForm>
-          <TitleForm text="مشاهده گزارش انبار" styleCss="" />
-
-          <LabelForm text="ورودی" styleCss="text-center" />
-          <TableForm
-            thItems={["ردیف", "نام", "تعداد", "واحد"]}
-            tdItems={[
-              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
-              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
-            ]}
-          />
-
-          <LabelForm text="خروجی" styleCss="text-center mt-7" />
-          <TableForm
-            thItems={["ردیف", "نام", "تعداد", "واحد"]}
-            tdItems={[
-              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
-              { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
-            ]}
-          />
-        </WithOutForm>
-      </Center>
+        <LabelForm text="خروجی" styleCss="text-center mt-7" />
+        <TableForm
+          thItems={["ردیف", "نام", "تعداد", "واحد"]}
+          tdItems={[
+            { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+            { index: 1, name: "ورودی4", quantity: 4, unit: "واحد 5" },
+          ]}
+        />
+      </WithOutForm>
     </>
   );
 }

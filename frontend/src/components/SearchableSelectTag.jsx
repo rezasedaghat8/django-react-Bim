@@ -37,7 +37,7 @@ function SearchableSelectTag({
   return (
     <Select
       isMulti={isMulti}
-      className={`text-right text-gray-800  rounded-md bg-ToastedAlmond ${styleCss}`}
+      className={`text-right text-gray-800 rounded-md   ${styleCss}`}
       placeholder="جستجو..."
       name={name}
       id={id}
@@ -54,10 +54,18 @@ function SearchableSelectTag({
       styles={{
         control: (base) => ({
           ...base,
-          backgroundColor: "rgb(254, 254, 223)", // directly setting the background color
+          // directly setting the background color
+          backgroundColor: "rgb(249, 247, 247)",
           outline: "none",
-          outlineOffset: "2px",
-          border: "none",
+          padding: "1px",
+          outlineOffset: "0px",
+          borderRadius: "6px",
+          border: "1px solid #ced4da",
+          borderTopWidth: "3px",
+          ":hover": {
+            borderTopWidth: "3px",
+            borderColor: "black",
+          },
         }),
       }}
     />

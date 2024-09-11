@@ -6,9 +6,9 @@ function TableForm({
   itemButton3,
 }) {
   return (
-    <table className="w-full table-auto border-collapse md:text-base text-xs mt-3">
+    <table className="w-full table-auto border-collapse  md:text-base text-xs mt-3">
       <thead>
-        <tr className="[&>*]:border [&>*]:p-2 [&>*]:font-bold">
+        <tr className="[&>*]:border dark:[&>*]:border-gray-100 [&>*]:border-gray-700  [&>*]:p-2 [&>*]:font-bold">
           {thItems.map((item, index) => (
             <th key={index}>{item}</th>
           ))}
@@ -18,7 +18,7 @@ function TableForm({
         {tdItems.map((item, index) => {
           return (
             <tr
-              className="[&>*]:border [&>*]:p-2 [&>*]:text-center"
+              className="[&>*]:border dark:[&>*]:border-gray-100 [&>*]:border-gray-700 [&>*]:p-2 [&>*]:text-center"
               key={index}
             >
               {Object.entries(item).map((entry, i) => (

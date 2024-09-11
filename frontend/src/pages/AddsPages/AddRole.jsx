@@ -1,17 +1,14 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
+import { useEffect } from "react";
 import TextArea from "../../components/TextArea";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
 import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import Form from "../../components/Form";
 import { useFormik } from "formik";
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
-
+import sendDataToServer from "../../utility/helper";
 
 function AddRole() {
   const formik = useFormik({
@@ -20,10 +17,14 @@ function AddRole() {
       description: "",
       minimumWage: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
       // فراخوانی تابع برای ارسال داده
-      sendDataToServer(values, "addRole")
+      sendDataToServer(values, "addRole");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -45,69 +46,72 @@ function AddRole() {
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm styleCss="  " text="در این قسمت میتوانید نقش اضافه  کنید." />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید نقش اضافه  کنید."
+        <LabelForm forInput="title" text="موضوع : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="title"
+          placeholder="موضوع را وارد کنید ..."
+          id="title"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.title && formik.errors.title ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.title}
           />
+        ) : null}
 
-          <LabelForm text="موضوع : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="title"
-            id="title"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="description" text="توضیحات : " />
+        <TextArea
+          formik={formik}
+          row={5}
+          name="description"
+          placeholder="توضیحات را وارد کنید ..."
+          id="description"
+        />
+        {formik.touched.description && formik.errors.description ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.description}
           />
-          {formik.touched.title && formik.errors.title ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.title}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="توضیحات : " />
-          <TextArea
-            formik={formik}
-            row={5}
-            name="description"
-            id="description"
+        <LabelForm forInput="minimumWage" text=" کمترین دستمزد  : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="minimumWage"
+          id="minimumWage"
+          placeholder="کمترین دستمزد را وارد کنید ..."
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.minimumWage && formik.errors.minimumWage ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.minimumWage}
           />
-          {formik.touched.description && formik.errors.description ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.description}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text=" کمترین دستمزد  : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="minimumWage"
-            id="minimumWage"
-            styleInput="rounded-md  text-black"
-          />
-          {formik.touched.minimumWage && formik.errors.minimumWage ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.minimumWage}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

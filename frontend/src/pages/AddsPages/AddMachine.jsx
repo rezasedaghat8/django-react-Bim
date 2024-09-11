@@ -1,6 +1,6 @@
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import Form from "../../components/Form";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
@@ -9,7 +9,6 @@ import TitleForm from "../../components/TitleForm";
 import SubmitBtn from "../../components/SubmitBtn";
 import TextArea from "../../components/TextArea";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useFormik } from "formik";
 
 const optionsForMachineName = [
   { label: "دستگاه 1", value: "MachineA" },
@@ -32,8 +31,12 @@ function AddMachine() {
       quantity: "",
       description: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -60,100 +63,106 @@ function AddMachine() {
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm
+          styleCss="  "
+          text="در این قسمت میتوانید دستگاه را ادد کنید."
+        />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید دستگاه را ادد کنید."
+        <LabelForm forInput="machineName" text="نام دستگاه :" />
+        <SearchableSelectTag
+          options={optionsForMachineName}
+          name="machineName"
+          isMulti={false}
+          id="machineName"
+          formik={formik}
+        />
+        {formik.touched.machineName && formik.errors.machineName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.machineName}
           />
+        ) : null}
 
-          <LabelForm text="نام دستگاه :" />
-          <SearchableSelectTag
-            options={optionsForMachineName}
-            name="machineName"
-            isMulti={false}
-            id="machineName"
-            formik={formik}
+        <LabelForm forInput="contractorName" text="نام پیمانکار :" />
+        <SearchableSelectTag
+          options={optionsForContractorName}
+          name="contractorName"
+          isMulti={false}
+          id="contractorName"
+          formik={formik}
+        />
+        {formik.touched.contractorName && formik.errors.contractorName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.contractorName}
           />
-          {formik.touched.machineName && formik.errors.machineName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.machineName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="نام پیمانکار :" />
-          <SearchableSelectTag
-            options={optionsForContractorName}
-            name="contractorName"
-            isMulti={false}
-            id="contractorName"
-            formik={formik}
+        <LabelForm forInput="name" text="نام  : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="name"
+          placeholder="نام را وارد کنید ..."
+          id="name"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.name && formik.errors.name ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.name}
           />
-          {formik.touched.contractorName && formik.errors.contractorName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.contractorName}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="نام  : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="name"
-            id="name"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="quantity" text="کمیت(کوانتیتی) : " />
+        <InputForm
+          formik={formik}
+          type="text"
+          name="quantity"
+          placeholder="تعداد را وارد کنید ..."
+          id="quantity"
+          styleInput="rounded-md  text-black"
+        />
+        {formik.touched.quantity && formik.errors.quantity ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.quantity}
           />
-          {formik.touched.name && formik.errors.name ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.name}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="کمیت(کوانتیتی) : " />
-          <InputForm
-            formik={formik}
-            type="text"
-            name="quantity"
-            id="quantity"
-            styleInput="rounded-md  text-black"
+        <LabelForm forInput="description" text="توضیحات :" />
+        <TextArea
+          formik={formik}
+          name="description"
+          id="description"
+          placeholder="توضیحات را وارد کنید ..."
+          col={5}
+          row={5}
+        />
+        {formik.touched.description && formik.errors.description ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.description}
           />
-          {formik.touched.quantity && formik.errors.quantity ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.quantity}
-            />
-          ) : null}
+        ) : null}
 
-          <LabelForm text="توضیحات :" />
-          <TextArea
-            formik={formik}
-            name="description"
-            id="description"
-            col={5}
-            row={5}
-          />
-          {formik.touched.description && formik.errors.description ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.description}
-            />
-          ) : null}
-
-          <SubmitBtn
-            textOfSubmit="ثبت"
-            styleToBtn="submitBtns"
-            // styleToNavLivk="submitBtns"
-          />
-        </Form>
-      </Center>
+        <SubmitBtn
+          textOfSubmit="ثبت"
+          styleToBtn="submitBtns"
+          // styleToNavLivk="submitBtns"
+        />
+      </Form>
     </>
   );
 }

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
-import PageNav from "../../components/PageNav";
 import TitleForm from "../../components/TitleForm";
 import LabelForm from "../../components/LabelForm";
 import InputForm from "../../components/InputForm";
@@ -12,16 +9,10 @@ import SubmitBtn from "../../components/SubmitBtn";
 import Form from "../../components/Form";
 import { NavLink } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
-import axios from 'axios';
-import sendDataToServer from "../../services/helper";
-
-
-// Options for SearchableSelectTag Items and Units
-// const optionForItems = [
-//   { label: "آیتم 1", value: "Item A" },
-//   { label: "آیتم 2", value: "Item B" },
-//   { label: "آیتم 3", value: "Item C" },
-// ];
+import toast from "react-hot-toast";
+import { useMenuBarContext } from "../../context/MenuBarContext";
+import axios from "axios";
+import sendDataToServer from "../../utility/helper";
 
 // const optionForUnit = [
 //   { label: "واحد 1", value: "UnitA" },
@@ -30,230 +21,288 @@ import sendDataToServer from "../../services/helper";
 // ];
 
 function AddPurchase() {
-
+  const [isShowDetail, setIsShowDetail] = useState(false);
+  const textStateDetail = isShowDetail ? "بستن" : "مشاهده جزئیات";
   const [items, setItems] = useState([]);
   const [units, setUnits] = useState([]);
 
-    useEffect(() => {
-      
-      // درخواست GET به API برای دریافت داده‌ها
-      axios.get('http://localhost:8000/api/addPurchase/')
-        .then(response => {
-          setItems(response.data.serializer_item);
-          setUnits(response.data.serializer_unit);
-          console.log(response.data.serializer_item);
-          console.log(response.data.serializer_unit);
-        })
-        .catch(error => {
-          console.error('Error fetching notes:', error);
-        });
+  useEffect(() => {
+    // درخواست GET به API برای دریافت داده‌ها
+    axios
+      .get("http://localhost:8000/api/addPurchase/")
+      .then((response) => {
+        setItems(response.data.serializer_item);
+        setUnits(response.data.serializer_unit);
+        console.log(response.data.serializer_item);
+        console.log(response.data.serializer_unit);
+      })
+      .catch((error) => {
+        console.error("Error fetching notes:", error);
+      });
+  }, []);
 
+  const optionForItems = items.map((item) => {
+    return { label: item.name, value: item.id };
+  });
 
-    }, []);
+  const optionForUnit = units.map((unit) => {
+    return { label: unit.name, value: unit.id };
+  });
 
-
-const optionForItems = items.map(item => {return{label: item.name, value: item.id}})
-
-const optionForUnit = units.map(unit => {return{label: unit.name, value: unit.id}})
-
-
-  const [isShow, setIsShow] = useState(false);
-
-  const formik = useFormik({
+  // formik for befored purchase
+  const formikNewPurchase = useFormik({
     initialValues: {
-      item: "",
-      quantity: "",
-      name: "",
-      description: "",
-      unit: "",
+      quantityNewPurchase: "",
+      nameNewPurchase: "",
+      descriptionNewPurchase: "",
+      unitNewPurchase: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
-      sendDataToServer(values, "addPurchase")
+
+    onSubmit: (values, { resetForm }) => {
+      // console.log(values);
+      sendDataToServer(values, "addPurchase");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
-      const errors = {};
+      let errors = {};
 
-      if (!values.name) {
-        errors.name = "لطفا نام را وارد کنید !";
-      }
-      if (!values.item) {
-        errors.item = "لطفا آیتم مد نظر خود را انتخاب کنید !";
+      if (!values.nameNewPurchase) {
+        errors.nameNewPurchase = "لطفا نام را وارد کنید !";
       }
 
-      if (!values.quantity) {
-        errors.quantity = "لطفا کمیت را وارد کنید !";
-      } else if (!/^\d*$/.test(values.quantity)) {
-        errors.quantity = "فقط عدد وارد کنید !";
+      if (!values.quantityNewPurchase) {
+        errors.quantityNewPurchase = "لطفا کمیت را وارد کنید !";
+      } else if (!/^\d*$/.test(values.quantityNewPurchase)) {
+        errors.quantityNewPurchase = "فقط عدد وارد کنید !";
       }
 
-      if (!values.unit) {
-        errors.unit = "لطفا واحد مد نظر  خود را انتخاب  کنید !";
+      if (!values.unitNewPurchase) {
+        errors.unitNewPurchase = "لطفا واحد مد نظر  خود را انتخاب  کنید !";
       }
-      if (!values.description) {
-        errors.description = "لطفا توضیحات را وارد کنید !";
+      if (!values.descriptionNewPurchase) {
+        errors.descriptionNewPurchase = "لطفا توضیحات را وارد کنید !";
       }
       return errors;
     },
   });
 
-  // console.log(formik);
+  // formik for Or new purchase
+  const formikBeforePurchase = useFormik({
+    initialValues: {
+      itemBeforePurchase: "",
+      quantityBeforePurchase: "",
+      nameBeforePurchase: "طاهر",
+      descriptionBeforePurchase: "بعضی توضیحات",
+      unitBeforePurchase: "UnitB",
+      moneyForPerUnitBeforePurchase: "50 هزار تومان",
+    },
+    onSubmit: (values, { resetForm }) => {
+      // console.log(values);
+      sendDataToServer(values, "addPurchase");
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.itemBeforePurchase) {
+        errors.itemBeforePurchase = "لطفا یک آیتم را وارد کنید !";
+      }
+
+      if (!values.quantityBeforePurchase) {
+        errors.quantityBeforePurchase = "لطفا کمیت را وارد کنید !";
+      } else if (!/^\d*$/.test(values.quantityBeforePurchase)) {
+        errors.quantityBeforePurchase = "فقط عدد وارد کنید !";
+      }
+
+      return errors;
+    },
+  });
+
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
 
   // handle openDetail
-  function handleOpenDetail() {
-    if (!isShow && formik.values.item) {
-      setIsShow(true);
+  function handleOpenDetail(e) {
+    e.preventDefault();
+    if (!isShowDetail) {
+      formikBeforePurchase.values.itemBeforePurchase === ""
+        ? toast.error("لطفا یک آیتم را انتخاب کنید.")
+        : setIsShowDetail(true);
     } else {
-      <ErrorMessage
-        styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-        textOfError={formik.errors.item}
-      />;
+      setIsShowDetail(false);
+      // <ErrorMessage
+      //   styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+      //   textOfError={formikBeforePurchase.errors.itemBeforePurchase}
+      // />;
     }
   }
 
-  
   return (
-    <>
-      <PageNav />
+    <div className="flex flex-col space-y-7 ">
+      <Form formik={formikBeforePurchase}>
+        <TitleForm text="درخواست خرید" />
 
-      <Center>
-        <Logo />
-
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm styleCss=" text-lg " text="درخواست خرید" />
-
-          <LabelForm forInput="item" text="آیتم :" />
-          <SearchableSelectTag
-            options={optionForItems}
-            formik={formik}
-            isMulti={false}
-            id="item"
-            name="item"
+        <LabelForm forInput="itemBeforePurchase" text="آیتم :" />
+        <SearchableSelectTag
+          options={optionForItems}
+          formik={formikBeforePurchase}
+          isMulti={false}
+          id="itemBeforePurchase"
+          name="itemBeforePurchase"
+        />
+        {formikBeforePurchase.touched.itemBeforePurchase &&
+        formikBeforePurchase.errors.itemBeforePurchase ? (
+          <ErrorMessage
+            styleCss="bg-red-300 mx-2 text-sm p-3 -my-3"
+            textOfError={formikBeforePurchase.errors.itemBeforePurchase}
           />
-          {formik.touched.item && formik.errors.item ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.item}
-            />
-          ) : null}
+        ) : null}
 
-          <button className="submitBtns" onClick={handleOpenDetail}>
-            مشاهده جزئیات
-          </button>
+        <button type="button" className="submitBtns" onClick={handleOpenDetail}>
+          {textStateDetail}
+        </button>
 
-          {isShow ? (
-            <>
-              <div className="text-right space-y-3">
-                <div>
-                  <label>نام :</label>
-                  <span>طاهر</span>
-                </div>
-
-                <div>
-                  <label>توضیحات :</label>
-                  <span>بعضی توضیحات</span>
-                </div>
-
-                <div>
-                  <label>واحد :</label>
-                  <span>واحد5</span>
-                </div>
-
-                <div>
-                  <label>قیمت تقریبی برای هر واحد :</label>
-                  <span>50هزار تومان</span>
-                </div>
-
-                <div>
-                  <LabelForm text="کمیت : " styleCss="" />
-                  <InputForm
-                    formik={formik}
-                    type="text"
-                    name="quantity"
-                    id="quantity"
-                    styleInput="rounded-md  text-black"
-                  />
-                  {formik.touched.quantity && formik.errors.quantity ? (
-                    <ErrorMessage
-                      styleCss="bg-red-300  mx-2  text-sm  p-3 mt-1"
-                      textOfError={formik.errors.quantity}
-                    />
-                  ) : null}
-                </div>
+        {isShowDetail && (
+          <>
+            <div className="text-right space-y-3">
+              <div>
+                <label>نام :</label>
+                <span>{formikBeforePurchase.values.nameBeforePurchase}</span>
               </div>
-              <SubmitBtn textOfSubmit="درخواست آیتم" styleToBtn="submitBtns" />
-            </>
-          ) : null}
 
+              <div>
+                <label>توضیحات :</label>
+                <span>
+                  {formikBeforePurchase.values.descriptionBeforePurchase}
+                </span>
+              </div>
+
+              <div>
+                <label>واحد :</label>
+                <span>{formikBeforePurchase.values.unitBeforePurchase}</span>
+              </div>
+
+              <div>
+                <label>قیمت تقریبی برای هر واحد :</label>
+                <span>
+                  {formikBeforePurchase.values.moneyForPerUnitBeforePurchase}
+                </span>
+              </div>
+
+              <div>
+                <LabelForm forInput="quantityBeforePurchase" text="کمیت : " />
+                <InputForm
+                  formik={formikBeforePurchase}
+                  type="text"
+                  name="quantityBeforePurchase"
+                  id="quantityBeforePurchase"
+                  styleInput="rounded-md text-black"
+                />
+                {formikBeforePurchase.touched.quantityBeforePurchase &&
+                formikBeforePurchase.errors.quantityBeforePurchase ? (
+                  <ErrorMessage
+                    styleCss="bg-red-300 mx-2 text-sm p-3 mt-1"
+                    textOfError={
+                      formikBeforePurchase.errors.quantityBeforePurchase
+                    }
+                  />
+                ) : null}
+              </div>
+            </div>
+            <SubmitBtn
+              textOfSubmit="درخواست آیتم"
+              styleToBtn="submitBtns"
+              type="submit" // Make sure type is "submit"
+            />
+          </>
+        )}
+      </Form>
+
+      {!isShowDetail && (
+        <Form formik={formikNewPurchase}>
           <div className="p-2 bg-gray-500">یا</div>
-
-          <TitleForm styleCss="text-lg mt-10" text="خرید آیتم جدید" />
-
-          <LabelForm text="نام و نام خانوادگی : " />
+          <TitleForm styleCss="mt-10" text="خرید آیتم جدید" />
+          <LabelForm forInput="name" text="نام و نام خانوادگی : " />
           <InputForm
-            formik={formik}
+            formik={formikNewPurchase}
             type="text"
-            name="name"
-            id="name"
+            name="nameNewPurchase"
+            id="nameNewPurchase"
+            placeholder="نام و نام خانوادگی را وارد کنید...."
             styleInput="rounded-md  text-black"
           />
-          {formik.touched.name && formik.errors.name ? (
+          {formikNewPurchase.touched.nameNewPurchase &&
+          formikNewPurchase.errors.nameNewPurchase ? (
             <ErrorMessage
               styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.name}
+              textOfError={formikNewPurchase.errors.nameNewPurchase}
             />
           ) : null}
-
-          <LabelForm text=" توضیحات : " />
+          <LabelForm forInput="description" text=" توضیحات : " />
           <TextArea
-            formik={formik}
-            name="description"
-            id="description"
+            formik={formikNewPurchase}
+            name="descriptionNewPurchase"
+            placeholder="توضیحات را وارد نمایید ..."
+            id="descriptionNewPurchase"
             row={5}
           />
-          {formik.touched.description && formik.errors.description ? (
+          {formikNewPurchase.touched.descriptionNewPurchase &&
+          formikNewPurchase.errors.descriptionNewPurchase ? (
             <ErrorMessage
               styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.description}
+              textOfError={formikNewPurchase.errors.descriptionNewPurchase}
             />
           ) : null}
-
           <LabelForm forInput="unit" text="واحد(یونیت) :" />
           <SearchableSelectTag
             options={optionForUnit}
-            formik={formik}
+            formik={formikNewPurchase}
             isMulti={false}
-            id="unit"
-            name="unit"
+            placeholder="واحد را وارد نمایید ..."
+            id="unitNewPurchase"
+            name="unitNewPurchase"
           />
-          {formik.touched.unit && formik.errors.unit ? (
+          {formikNewPurchase.touched.unitNewPurchase &&
+          formikNewPurchase.errors.unitNewPurchase ? (
             <ErrorMessage
               styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.unit}
+              textOfError={formikNewPurchase.errors.unitNewPurchase}
             />
           ) : null}
-
-          <NavLink to="/AddUnit">افزودن واحد جدید</NavLink>
-
-          <LabelForm text="کمیت(کوانتیتی): " />
+          <NavLink className="submitBtns" to="/AddUnit">
+            افزودن واحد جدید
+          </NavLink>
+          <LabelForm forInput="quantity" text="کمیت(کوانتیتی): " />
           <InputForm
-            formik={formik}
+            formik={formikNewPurchase}
             type="text"
-            name="quantity"
-            id="quantity"
+            name="quantityNewPurchase"
+            id="quantityNewPurchase"
+            placeholder="تعداد را وارد نمایید ..."
             styleInput="rounded-md  text-black"
           />
-          {formik.touched.quantity && formik.errors.quantity ? (
+          {formikNewPurchase.touched.quantityNewPurchase &&
+          formikNewPurchase.errors.quantityNewPurchase ? (
             <ErrorMessage
               styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.quantity}
+              textOfError={formikNewPurchase.errors.quantityNewPurchase}
             />
           ) : null}
-
           <SubmitBtn textOfSubmit="درخواست آیتم" styleToBtn="submitBtns" />
         </Form>
-      </Center>
-    </>
+      )}
+    </div>
   );
 }
 

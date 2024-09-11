@@ -1,16 +1,14 @@
+import { useEffect } from "react";
 import { useFormik } from "formik";
 import { useState } from "react";
-import PageNav from "../../components/PageNav";
-import Center from "../../components/Center";
-import Logo from "../../components/Logo";
 import LabelForm from "../../components/LabelForm";
 import SearchableSelectTag from "../../components/SearchableSelectTag";
 import SubmitBtn from "../../components/SubmitBtn";
 import ErrorMessage from "../../components/ErrorMessage";
 import TitleForm from "../../components/TitleForm";
 import Form from "../../components/Form";
+import { useMenuBarContext } from "../../context/MenuBarContext";
 import InputForm from "../../components/InputForm";
-import sendDataToServer from "../../services/helper";
 
 // option for project name Selector
 let optionsForProjectName = [
@@ -34,35 +32,26 @@ let optionsForContractors = [
 ];
 
 function EditProject() {
-  
-  
+  //   const [personnels, setPersonnels] = useState([]);
 
-  
-//   const [personnels, setPersonnels] = useState([]);
+  //   useEffect(() => {
 
-//   useEffect(() => {
-    
-//     // درخواست GET به API برای دریافت داده‌ها
-//     axios.get('http://localhost:8000/api/addMeeting/')
-//       .then(response => {
-//         setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
-//         console.log(response.data.serializer_personnels);
-//       })
-//       .catch(error => {
-//         console.error('Error fetching personnels:', error);
-//       });
+  //     // درخواست GET به API برای دریافت داده‌ها
+  //     axios.get('http://localhost:8000/api/addMeeting/')
+  //       .then(response => {
+  //         setPersonnels(response.data.serializer_personnels);  // داده‌ها را در state ذخیره کنید
+  //         console.log(response.data.serializer_personnels);
+  //       })
+  //       .catch(error => {
+  //         console.error('Error fetching personnels:', error);
+  //       });
 
+  //   }, []);
 
-//   }, []);
-  
-// const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
-  
-  
-  
-  
-  
+  // const optionsForPersonnelName = personnels.map(item => {return{label: item.first_name, value: item.id}})
+
   // i must use  useState hook
-  const [isShow, setIsShow] = useState(false);
+  const [isShowDetail, setIsShowDetail] = useState(false);
   const formik = useFormik({
     initialValues: {
       projectName: "",
@@ -72,8 +61,12 @@ function EditProject() {
       personnel: "",
       contractors: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      // toast.success("با موفقیت ثبت شد");
+      resetForm();
+      // Scroll to top after form submission
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     validate: (values) => {
       let errors = {};
@@ -100,21 +93,18 @@ function EditProject() {
     },
   });
 
+  const { setIsShow } = useMenuBarContext();
+  useEffect(
+    function () {
+      setIsShow(false);
+    },
+    [setIsShow]
+  );
+
   // function to handle the showDetailButton
   function openTheDetails() {
-    if (!isShow && formik.values.projectName) {
-      setIsShow(true);
-
-
-
-
-
-      // sendDataToServer()
-
-
-
-
-
+    if (!isShowDetail && formik.values.projectName) {
+      setIsShowDetail(true);
     } else {
       <ErrorMessage
         styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
@@ -125,122 +115,119 @@ function EditProject() {
 
   return (
     <>
-      <PageNav />
+      <Form formik={formik} styleCss="text-white">
+        <TitleForm
+          styleCss=" "
+          text="در این قسمت میتوانید پروژه ویرایش  کنید."
+        />
 
-      <Center>
-        <Logo />
-        <Form formik={formik} styleCss="text-white">
-          <TitleForm
-            styleCss=" text-lg "
-            text="در این قسمت میتوانید پروژه ویرایش  کنید."
+        <LabelForm forInput="projectName" text="نام پروژه:" />
+        <SearchableSelectTag
+          options={optionsForProjectName}
+          formik={formik}
+          isMulti={false}
+          id="projectName"
+          name="projectName"
+        />
+        {formik.touched.projectName && formik.errors.projectName ? (
+          <ErrorMessage
+            styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+            textOfError={formik.errors.projectName}
           />
+        ) : null}
+        {/* show detail button */}
+        <button className="submitBtns mt-0" onClick={() => openTheDetails()}>
+          مشاهده جزئیات
+        </button>
 
-          <LabelForm forInput="projectName" text="نام پروژه:" />
-          <SearchableSelectTag
-            options={optionsForProjectName}
-            formik={formik}
-            isMulti={false}
-            id="projectName"
-            name="projectName"
-          />
-          {formik.touched.projectName && formik.errors.projectName ? (
-            <ErrorMessage
-              styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-              textOfError={formik.errors.projectName}
+        {/* details: */}
+        {isShowDetail ? (
+          <>
+            <LabelForm forInput="name" text="نام : " />
+            <InputForm
+              formik={formik}
+              type="text"
+              name="name"
+              placeholder="نام را وارد کنید ..."
+              id="name"
+              styleInput="rounded-md  text-black"
             />
-          ) : null}
-          {/* show detail button */}
-          <button className="submitBtns mt-0" onClick={() => openTheDetails()}>
-            مشاهده جزئیات
-          </button>
-
-          {/* details: */}
-          {isShow ? (
-            <>
-              <LabelForm text="نام : " />
-              <InputForm
-                formik={formik}
-                type="text"
-                name="name"
-                id="name"
-                styleInput="rounded-md  text-black"
+            {formik.touched.name && formik.errors.name ? (
+              <ErrorMessage
+                styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+                textOfError={formik.errors.name}
               />
-              {formik.touched.name && formik.errors.name ? (
-                <ErrorMessage
-                  styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-                  textOfError={formik.errors.name}
-                />
-              ) : null}{" "}
-              <LabelForm text="نام معمار : " />
-              <InputForm
-                formik={formik}
-                type="text"
-                defaultValue="0000000000000000000"
-                name="architectName"
-                id="architectName"
-                styleInput="rounded-md  text-black"
+            ) : null}{" "}
+            <LabelForm forInput="architectName" text="نام معمار : " />
+            <InputForm
+              formik={formik}
+              type="text"
+              name="architectName"
+              id="architectName"
+              placeholder="نام معمار را وارد کنید ..."
+              styleInput="rounded-md  text-black"
+            />
+            {formik.touched.architectName && formik.errors.architectName ? (
+              <ErrorMessage
+                styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+                textOfError={formik.errors.architectName}
               />
-              {formik.touched.architectName && formik.errors.architectName ? (
-                <ErrorMessage
-                  styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-                  textOfError={formik.errors.architectName}
-                />
-              ) : null}{" "}
-              <LabelForm text="  نام کارمند : " />
-              <InputForm
-                formik={formik}
-                type="text"
-                name="employerName"
-                id="employerName"
-                styleInput="rounded-md  text-black"
+            ) : null}{" "}
+            <LabelForm forInput="employerName" text="  نام کارمند : " />
+            <InputForm
+              formik={formik}
+              type="text"
+              name="employerName"
+              id="employerName"
+              placeholder="نام کارمند را وارد کنید ..."
+              styleInput="rounded-md  text-black"
+            />
+            {formik.touched.employerName && formik.errors.employerName ? (
+              <ErrorMessage
+                styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+                textOfError={formik.errors.employerName}
               />
-              {formik.touched.employerName && formik.errors.employerName ? (
-                <ErrorMessage
-                  styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-                  textOfError={formik.errors.employerName}
-                />
-              ) : null}{" "}
-              <LabelForm forInput="personnel" text=" پرسنل ها:" />
-              <SearchableSelectTag
-                options={optionsForPersonnel}
-                formik={formik}
-                isMulti={true}
-                id="personnel"
-                name="personnel"
+            ) : null}{" "}
+            <LabelForm forInput="personnel" text=" پرسنل ها:" />
+            <SearchableSelectTag
+              options={optionsForPersonnel}
+              formik={formik}
+              isMulti={true}
+              id="personnel"
+              name="personnel"
+            />
+            {formik.touched.personnel && formik.errors.personnel ? (
+              <ErrorMessage
+                styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+                textOfError={formik.errors.personnel}
               />
-              {formik.touched.personnel && formik.errors.personnel ? (
-                <ErrorMessage
-                  styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-                  textOfError={formik.errors.personnel}
-                />
-              ) : null}
-              <LabelForm forInput="contractors" text=" پیمانکار ها:" />
-              <SearchableSelectTag
-                options={optionsForContractors}
-                formik={formik}
-                isMulti={true}
-                id="contractors"
-                name="contractors"
+            ) : null}
+            <LabelForm forInput="contractors" text=" پیمانکار ها:" />
+            <SearchableSelectTag
+              options={optionsForContractors}
+              formik={formik}
+              isMulti={true}
+              id="contractors"
+              name="contractors"
+            />
+            {formik.touched.contractors && formik.errors.contractors ? (
+              <ErrorMessage
+                styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
+                textOfError={formik.errors.contractors}
               />
-              {formik.touched.contractors && formik.errors.contractors ? (
-                <ErrorMessage
-                  styleCss="bg-red-300  mx-2  text-sm  p-3 -my-3"
-                  textOfError={formik.errors.contractors}
-                />
-              ) : null}
-              <SubmitBtn
-                textOfSubmit="ثبت"
-                styleToBtn="submitBtns"
-                // styleToNavLivk="submitBtns"
-              />
-              {/* delete warehouse button */}
-              <button className="submitBtns mt-0">حذف انبار</button>
-            </>
-          ) : (
-            ""
-          )}
-        </Form>
-      </Center>
+            ) : null}
+            <SubmitBtn
+              textOfSubmit="ثبت"
+              styleToBtn="submitBtns"
+              // styleToNavLivk="submitBtns"
+            />
+            {/* delete warehouse button */}
+            <button className="submitBtns mt-0">حذف انبار</button>
+          </>
+        ) : (
+          ""
+        )}
+      </Form>
     </>
   );
 }
